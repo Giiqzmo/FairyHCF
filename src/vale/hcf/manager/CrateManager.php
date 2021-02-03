@@ -13,7 +13,7 @@ class CrateManager{
 
 	public function __construct(){
 
-	} 
+	}
 
 	public function cratePreview(Player $player, string $crateType){
 		switch ($crateType){
@@ -33,7 +33,7 @@ class CrateManager{
 				break;
 			case "Jory":
 				break;
-			case "Newcoolboys":
+			case "NewCoolBoys":
 				break;
 		}
 	}
