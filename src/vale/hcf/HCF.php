@@ -4,6 +4,8 @@ namespace vale\hcf;
 #Will use sessions instead of this gay data saving method
 #Please Put ALL UPDATES IN #READ.MD
 
+use muqsit\invmenu\InvMenu;
+use muqsit\invmenu\InvMenuHandler;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerDeathEvent;
 use pocketmine\event\player\PlayerJoinEvent;
@@ -13,6 +15,7 @@ use pocketmine\Server;
 use pocketmine\utils\Config;
 use vale\hcf\cmds\mod\BlacklistCommand;
 use vale\hcf\cmds\mod\WarnCommand;
+use vale\hcf\events\CrateListener;
 use vale\hcf\events\PlayerListener;
 use vale\hcf\manager\DeathBanManager;
 use vale\hcf\manager\DataManager;
@@ -36,18 +39,19 @@ class HCF extends PluginBase implements Listener
 	/** @var Config $deathBannedPlayers */
 	public static Config $deathBannedPlayers;
 	public static DeathBanManager $deathBanManager;
-    public static PlayerListener $playerListener;
+    public static Config $crateData;
     /** @var string[] $worlds */
 	public array $worlds = ["test", "uh", "ok"];
 
-	public function onEnable(): void
-	{
+	public function onEnable(): void{
+		if(!InvMenuHandler::isRegistered()){
+			InvMenuHandler::register($this);
+		}
 		self::$instance = $this;
 		$this->initDatabase();
 		$this->loadWorlds();
 		$this->loadCommands();
 		$this->initListeners();
-        // someone move this i dont fell like doing it
         $this->getScheduler()->scheduleRepeatingTask(new DeathbanTask($this), 20);
 	}
 
@@ -70,12 +74,17 @@ class HCF extends PluginBase implements Listener
 		}
 	}
 
-	function initDatabase()
-	{
-		self::$lives = new Config($this->getDataFolder() . "lives.yml");
-		self::$deaths = new Config($this->getDataFolder() . "deaths.yml");
-		self::$kills = new Config($this->getDataFolder() . "kills.yml");
-		self::$warns = new Config($this->getDataFolder() . "warns.yml");
+	function initDatabase(){
+		@mkdir($this->getDataFolder(). "lives");
+		@mkdir($this->getDataFolder(). "deaths");
+		@mkdir($this->getDataFolder(). "crates");
+		@mkdir($this->getDataFolder(). "warns");
+		@mkdir($this->getDataFolder(). "kills");
+		self::$lives = new Config($this->getDataFolder() . "lives/" . "lives.yml");
+		self::$deaths = new Config($this->getDataFolder() . "deaths/" . "deaths.yml");
+		self::$kills = new Config($this->getDataFolder() . "kills/" . "kills.yml");
+		self::$warns = new Config($this->getDataFolder() . "warns/" . "warns.yml");
+		self::$crateData = new Config($this->getDataFolder() . "crates/" . "CrateData.yml");
 		self::$deathBannedPlayers = new Config($this->getDataFolder(). "deathbannedplayers.yml");
 		self::$blacklistedPlayers = new Config($this->getDataFolder() . "blacklistedplayers.yml");
 		self::$dataManager = new DataManager($this);
@@ -84,6 +93,7 @@ class HCF extends PluginBase implements Listener
 
 	function initListeners(){
 		new PlayerListener($this);
+		new CrateListener($this);
 	}
 
 	public function getWarnData(): Config
