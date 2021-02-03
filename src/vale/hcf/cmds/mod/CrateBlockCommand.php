@@ -1,5 +1,4 @@
 <?php
-namespace vale\hcf\cmds\mod;
 
 use pocketmine\command\PluginCommand;
 use pocketmine\command\PluginIdentifiableCommand;
