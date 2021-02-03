@@ -63,10 +63,17 @@ class DeathBanManager
 
 	}
 
-	public function hasLives(Player $player): bool{
-		return true;
+	public function hasLives(Player $player): bool
+	{
+		$data = HCF::$lives;
+		if ($data->exists($player->getName())) {
+			if ($data->get($player->getName() >= 1))
+				return true;
+		}else{
+			return false;
+		}
+		return 0;
 	}
-
 	public function sendLives(Player $sender, Player $recipient, int $value): void{
 	}
 
