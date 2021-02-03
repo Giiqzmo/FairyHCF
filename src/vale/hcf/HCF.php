@@ -91,6 +91,8 @@ class HCF extends PluginBase implements Listener
 		self::$deathBanManager = new DeathBanManager();
 	}
 
+
+
 	function initListeners(){
 		new PlayerListener($this);
 		new CrateListener($this);
