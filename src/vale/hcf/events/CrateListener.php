@@ -21,11 +21,30 @@ class CrateListener implements Listener
 		$player = $ev->getPlayer();
 		$block = $ev->getBlock();
 		$hand = $player->getInventory()->getItemInHand();
-		//$config = DB::$cratedata;
-		$level = $block->getLevel()->getName();
+		$level = (string) $block->getLevel()->getName();
 		$l = $block->getLevel();
 		$names = explode("\n", $hand->getCustomName());
+		$data = HCF::$crateData;
+		$ev->setCancelled();
+		$name = $block->getName();
+		switch ($name) {
+			case "Fairy":
+				if (!$data->exists("FairyCrate")) {
+					$data->set("FairyCrate", [
+						"Name" => "FairyCrate",
+						"PosX" => $block->getX(),
+						"PosY" => $block->getY(),
+						"PosZ" => $block->getZ(),
+						"Level" => $level
+					]);
+					$data->save();
+				} else {
+					$ev->setCancelled();
+					$player->sendMessage("Block Already Placed");
+
+				}
+				break;
+		}
 	}
+
 }
-
-
