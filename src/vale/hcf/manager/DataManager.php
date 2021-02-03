@@ -10,8 +10,8 @@ use pocketmine\network\mcpe\protocol\LevelChunkPacket;
 use pocketmine\Player;
 use vale\hcf\HCF;
 
-class DataManager implements Listener
-{ 
+class DataManager
+{
 	public $plugin;
 
 	public function __construct(HCF $plugin)
