@@ -33,7 +33,7 @@ class CrateManager{
 				break;
 			case "Jory":
 				break;
-			case "NewCoolBoys":
+			case "Newcoolboys":
 				break;
 		}
 	}
