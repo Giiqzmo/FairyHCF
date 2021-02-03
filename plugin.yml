@@ -1,0 +1,9 @@
+  name: "HCF"
+  main: vale\hcf\HCF
+  version: 1.0
+  api: 3.0.0
+  authors:
+      - vale
+      - NEWCOOLBOYS
+      - jory
+  description: "HCF CORE"
