@@ -7,7 +7,7 @@ use pocketmine\utils\Config;
 use vale\hcf\HCF;
 
 class DeathBanManager
-{
+{ 
 
 	public function setDeathBan(Player $player, int $value)
 	{
