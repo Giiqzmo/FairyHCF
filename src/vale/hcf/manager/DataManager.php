@@ -11,7 +11,7 @@ use pocketmine\Player;
 use vale\hcf\HCF;
 
 class DataManager implements Listener
-{
+{ 
 	public $plugin;
 
 	public function __construct(HCF $plugin)
