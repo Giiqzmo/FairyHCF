@@ -95,7 +95,7 @@ class FactionCommand extends PluginCommand
                     case "invite":
                     case "INVITE":
                     case "Invite":
-					$mgr = new FactionLoader(HCF::getInstance());
+			$mgr = new FactionLoader(HCF::getInstance());
                         if (!isset($args[1])) {
                             $sender->sendMessage("Provide a playername");
                             return false;
