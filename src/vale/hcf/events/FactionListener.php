@@ -1,3 +1,4 @@
+<?php
 namespace vale\hcf\events;
 
 class FactionListener implements Listener{
