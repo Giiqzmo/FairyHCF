@@ -75,16 +75,21 @@ class FactionCommand extends PluginCommand
                             $sender->sendMessage("Home" . $home);
                         }
                         break;
-                        
+
 					case "INFO":
 					case "Info":
 					case "info":
+
 						$mgr = HCF::getInstance()->getFactionManager();
-						$fac = $mgr->getPlayerFaction($sender);
-						$dtr = $mgr->getFactionDTR($fac);
-						$sender->sendMessage("Name {$fac}");
-						$sender->sendMessage("DTR {$dtr}");
-						
+						if($mgr->isInFaction($sender)) {
+							$fac = $mgr->getPlayerFaction($sender);
+							$dtr = $mgr->getFactionDTR($fac);
+							$sender->sendMessage("Name {$fac}");
+							$sender->sendMessage("DTR {$dtr}");
+
+						}else{
+							$sender->sendMessage("not in a fac coooon");
+						}
 						break;
 
                     case "invite":
