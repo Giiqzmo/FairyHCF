@@ -13,6 +13,7 @@ class FactionLoader
     public SQLite3 $factionData;
     public HCF $plugin;
     public array $factionChat = [];
+    public $dtrFreeze;
 
     public function __construct(HCF $plugin)
     {
