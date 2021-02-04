@@ -4,16 +4,16 @@ namespace vale\hcf\crates;
 
 use muqsit\invmenu\InvMenu;
 use muqsit\invmenu\MenuIds;
+use pocketmine\item\enchantment\Enchantment;
+use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\Item;
 use pocketmine\math\Vector3;
+use pocketmine\network\mcpe\protocol\types\Enchant;
+use pocketmine\utils\TextFormat as C;
 use pocketmine\Player;
 use pocketmine\utils\Config;
 
 class CrateManager{
-
-	public function __construct(){
-
-	}
 
 	public function cratePreview(Player $player, string $crateType){
 		switch ($crateType){
@@ -39,7 +39,7 @@ class CrateManager{
 	}
 
 	public function sendFairyCrateRewards(Player $player){
-		$chance = mt_rand(1,4);
+		$chance = mt_rand(1,5);
 		switch ($chance){
 			case 1:
 				$diamondBlocks = Item::get(Item::DIAMOND_BLOCK, 0 , mt_rand(1,32));
@@ -75,6 +75,15 @@ class CrateManager{
 					$player->getInventory()->addItem($godApple);
 				}
 				break;
+            		case 5:
+               			$fairyAxe = Item::get(Item::DIAMOND_AXE)->setCustomName(C::LIGHT_PURPLE . "Fairy Axe");
+                		$fairyAxe->addEnchantment(new EnchantmentInstance(Enchantment::getEnchantment(2), 3));
+                		if(!$player->getInventory()->canAddItem($fairyAxe)){
+                    			$player->getLevel()->dropItem(new Vector3($player->getX(), $player->getY(), $player->getZ()), $fairyAxe);
+                		}else{
+                    			$player->getInventory()->addItem($fairyAxe);
+                		}
+               		 	break;
 		}
 	}
 }
