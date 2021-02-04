@@ -118,16 +118,21 @@ class FactionCommand extends PluginCommand
 					case "Chat":
 						if(!isset($args[1])){
 							$sender->sendMessage("/f chat (faction) (public)");
+							return false;
 						}
 
-						if(strtolower($args[1] === "public" or "p" or "pc")){
+						if(strtolower($args[1] === "public" or "p" or "pc")) {
 							$mgr = new FactionLoader(HCF::getInstance());
-							$mgr->setFactionChat($sender, "off");
-							$sender->sendMessage("Faction Chat Disabled");
-						}
-						if (strtolower($args[1]) === "faction" or "f" or "fc"){
-							$mgr->setFactionChat($sender, "on");
-							$sender->sendMessage("Faction Chat Enabled");
+							if (isset($mgr->factionChat[$sender->getName()])) {
+								unset($mgr->factionChat[$sender->getName()]);
+								$sender->sendMessage("Faction Chat Disabled");
+							}
+							if (strtolower($args[1]) === "faction" or "f" or "fc") {
+								if (!isset($mgr->factionChat[$sender->getName()])) {
+									array_push($mgr->factionChat, $sender->getName());
+									$sender->sendMessage("Faction Chat Enabled");
+								}
+							}
 						}
 						break;
 					case "FRIENDLYFIRE":
