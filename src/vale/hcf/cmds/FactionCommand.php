@@ -116,6 +116,7 @@ class FactionCommand extends PluginCommand
 					case "chat":
 					case "CHAT":
 					case "Chat":
+			                case "c":
 						if(!isset($args[1])){
 							$sender->sendMessage("/f chat (faction) (public)");
 							return false;
