@@ -14,11 +14,11 @@ use pocketmine\plugin\PluginBase;
 use pocketmine\Server;
 use pocketmine\utils\Config;
 use SQLite3;
+use vale\hcf\cmds\FactionCommand;
 use vale\hcf\cmds\mod\BlacklistCommand;
 use vale\hcf\cmds\mod\WarnCommand;
 use vale\hcf\events\CrateListener;
 use vale\hcf\events\PlayerListener;
-use vale\hcf\factions\commands\FactionCommand;
 use vale\hcf\factions\FactionLoader;
 use vale\hcf\manager\DeathBanManager;
 use vale\hcf\manager\DataManager;
@@ -42,10 +42,10 @@ class HCF extends PluginBase implements Listener
 	/** @var Config $deathBannedPlayers */
 	public static Config $deathBannedPlayers;
 	public static DeathBanManager $deathBanManager;
-    public static Config $crateData;
-    public static SQLite3 $factionData;
-    public static FactionLoader $factionManager;
-    /** @var string[] $worlds */
+	public static Config $crateData;
+	public static SQLite3 $factionData;
+	public static FactionLoader $factionManager;
+	/** @var string[] $worlds */
 	public array $worlds = ["test", "uh", "ok"];
 
 	public function onEnable(): void{
@@ -57,7 +57,7 @@ class HCF extends PluginBase implements Listener
 		$this->loadWorlds();
 		$this->loadCommands();
 		$this->initListeners();
-        $this->getScheduler()->scheduleRepeatingTask(new DeathbanTask($this), 20);
+		$this->getScheduler()->scheduleRepeatingTask(new DeathbanTask($this), 20);
 	}
 
 	function loadCommands()
@@ -66,7 +66,7 @@ class HCF extends PluginBase implements Listener
 		$map->registerAll("HCF", [
 			new BlacklistCommand($this),
 			new WarnCommand($this),
-            new FactionCommand()
+			new FactionCommand($this),
 		]);
 
 	}
@@ -81,6 +81,7 @@ class HCF extends PluginBase implements Listener
 	}
 
 	function initDatabase(){
+		self::$factionManager = new FactionLoader($this);
 		@mkdir($this->getDataFolder(). "lives");
 		@mkdir($this->getDataFolder(). "deaths");
 		@mkdir($this->getDataFolder(). "crates");
@@ -143,10 +144,10 @@ class HCF extends PluginBase implements Listener
 		return self::$dataManager;
 	}
 
-    public function getFactionManager(): FactionLoader
-    {
-        return self::$factionManager;
-    }
+	public function getFactionManager(): FactionLoader
+	{
+		return self::$factionManager;
+	}
 
 	public static function getInstance(): HCF
 	{
@@ -164,8 +165,8 @@ class HCF extends PluginBase implements Listener
 		return "$d days $h hours $m minutes $s seconds";
 	}
 
-    public function getFactionData(): SQLite3
-    {
-        return self::$factionData;
-    }
+	public function getFactionData(): SQLite3
+	{
+		return self::$factionData;
+	}
 }
