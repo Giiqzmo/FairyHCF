@@ -64,10 +64,11 @@ class FactionLoader
             $faction = $this->factionData->query("SELECT * FROM home WHERE faction = '$faction' ");
             $factionArray = $faction->fetchArray(SQLITE3_ASSOC);
             return $factionArray;
-        } else {
+        if (empty($factionArray)) {
             return "Not set";
+         }
+            return true;
         }
-    }
 
     public function playerFactionExists(string $faction): bool
     {
@@ -251,13 +252,17 @@ class FactionLoader
     
     public function hasFchatEnabled(Player $player): bool{
         return isset($this->factionChat[$player->getName]));
-}
-    
-    public function setFactionChat(Player $player){
-    if(!in_array($this->factionChat, $player->getName())
-    array_push($this->factionChat, $player->getName();
-//made this on phone check syntax pls
+   }
+        
+    public function setFChat(Player $player){
+    if(!in_array($this->factionChat, $player->getName()){
+     array_push($this->factionChat, $player->getName());
+       $player->sendMessage("f chat enabled"); 
+    }else{
+        if(in_array($this->factionChat, $player->getName()){
+         unset($this->factionChat, $player->getName());
+            $player->sendMessage("f chat disabled");
+        }
     }
-      
-
-}
+           } 
+   
