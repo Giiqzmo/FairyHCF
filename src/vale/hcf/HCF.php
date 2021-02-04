@@ -13,10 +13,13 @@ use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\Server;
 use pocketmine\utils\Config;
+use SQLite3;
 use vale\hcf\cmds\mod\BlacklistCommand;
 use vale\hcf\cmds\mod\WarnCommand;
 use vale\hcf\events\CrateListener;
 use vale\hcf\events\PlayerListener;
+use vale\hcf\factions\commands\FactionCommand;
+use vale\hcf\factions\FactionLoader;
 use vale\hcf\manager\DeathBanManager;
 use vale\hcf\manager\DataManager;
 use vale\hcf\manager\tasks\DeathbanTask;
@@ -40,6 +43,8 @@ class HCF extends PluginBase implements Listener
 	public static Config $deathBannedPlayers;
 	public static DeathBanManager $deathBanManager;
     public static Config $crateData;
+    public static SQLite3 $factionData;
+    public static FactionLoader $factionManager;
     /** @var string[] $worlds */
 	public array $worlds = ["test", "uh", "ok"];
 
@@ -61,6 +66,7 @@ class HCF extends PluginBase implements Listener
 		$map->registerAll("HCF", [
 			new BlacklistCommand($this),
 			new WarnCommand($this),
+            new FactionCommand()
 		]);
 
 	}
@@ -91,8 +97,6 @@ class HCF extends PluginBase implements Listener
 		self::$deathBanManager = new DeathBanManager();
 	}
 
-
-
 	function initListeners(){
 		new PlayerListener($this);
 		new CrateListener($this);
@@ -112,7 +116,6 @@ class HCF extends PluginBase implements Listener
 	{
 		return self::$deaths;
 	}
-
 
 	/**
 	 * @return Config
@@ -140,6 +143,11 @@ class HCF extends PluginBase implements Listener
 		return self::$dataManager;
 	}
 
+    public function getFactionManager(): FactionLoader
+    {
+        return self::$factionManager;
+    }
+
 	public static function getInstance(): HCF
 	{
 		return self::$instance;
@@ -155,4 +163,9 @@ class HCF extends PluginBase implements Listener
 
 		return "$d days $h hours $m minutes $s seconds";
 	}
+
+    public function getFactionData(): SQLite3
+    {
+        return self::$factionData;
+    }
 }
