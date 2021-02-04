@@ -4,6 +4,8 @@ namespace vale\hcf;
 #Will use sessions instead of this gay data saving method
 #Please Put ALL UPDATES IN #READ.MD
 
+use vale\hcf\cmds\SotwCommand;
+use vale\hcf\events\FactionListener;
 use muqsit\invmenu\InvMenuHandler;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\Config;
@@ -106,6 +108,7 @@ class HCF extends PluginBase
             new BlacklistCommand($this),
             new WarnCommand($this),
             new FactionCommand($this),
+			new SotwCommand($this),
         ]);
 
     }
@@ -114,6 +117,7 @@ class HCF extends PluginBase
     {
         new PlayerListener($this);
         new CrateListener($this);
+        new FactionListener($this);
     }
 
     public function getWarnData(): Config
