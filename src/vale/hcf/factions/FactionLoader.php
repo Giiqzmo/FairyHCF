@@ -39,7 +39,7 @@ class FactionLoader
 
 	public function isInFaction($player): bool
 	{
-		$player = $player->getName();
+		$player = $this->plugin->getServer()->getPlayer($player);
 		$faction = $this->factionData->query("SELECT factionname from faction WHERE player = '$player'");
 		$factionArray = $faction->fetchArray(SQLITE3_ASSOC);
 		if ($factionArray === null) {
@@ -50,7 +50,7 @@ class FactionLoader
 
 	public function getPlayerFaction($player)
 	{
-		$player = $player->getName();
+		$player = $this->plugin->getServer()->getPlayer($player);
 		$faction = $this->factionData->query("SELECT factionname from faction WHERE player = '$player'");
 		$factionArray = $faction->fetchArray(SQLITE3_ASSOC);
 		return $factionArray['factionname'];
@@ -126,7 +126,7 @@ class FactionLoader
 
 	public function isFactionLeader($player)
 	{
-		$player = $player->getName();
+		$player = $this->plugin->getServer()->getPlayer($player);
 		$faction = $this->factionData->query("SELECT rank FROM faction WHERE player ='$player';");
 		$factionArray = $faction->fetchArray(SQLITE3_ASSOC);
 		if ($factionArray['rank'] === "Leader") {
@@ -137,7 +137,7 @@ class FactionLoader
 
 	public function isFactionCoLeader($player)
 	{
-		$player = $player->getName();
+		$player = $this->plugin->getServer()->getPlayer($player);
 		$faction = $this->factionData->query("SELECT rank FROM faction WHERE player ='$player';");
 		$factionArray = $faction->fetchArray(SQLITE3_ASSOC);
 		if ($factionArray['rank'] === "Co-Leader") {
@@ -148,7 +148,7 @@ class FactionLoader
 
 	public function isFactionCaptain($player)
 	{
-		$player = $player->getName();
+		$player = $this->plugin->getServer()->getPlayer($player);
 		$faction = $this->factionData->query("SELECT rank FROM faction WHERE player ='$player';");
 		$factionArray = $faction->fetchArray(SQLITE3_ASSOC);
 		if ($factionArray['rank'] === "Captain") {
@@ -159,7 +159,7 @@ class FactionLoader
 
 	public function isFactionMember($player)
 	{
-		$player = $player->getName();
+		$player = $this->plugin->getServer()->getPlayer($player);
 		$faction = $this->factionData->query("SELECT rank FROM faction WHERE player ='$player';");
 		$factionArray = $faction->fetchArray(SQLITE3_ASSOC);
 		$factionRank = $factionArray["rank"] == "Member";
@@ -168,7 +168,7 @@ class FactionLoader
 
 	public function createFaction(string $name, $player)
 	{
-		$player = $player->getName();
+		$player = $this->plugin->getServer()->getPlayer($player);
 		$faction = $this->factionData->prepare("INSERT OR REPLACE INTO faction (player, factionname, rank) VALUES (:player, :factionname, :rank)");
 		$faction->bindValue(":player", $player);
 		$faction->bindValue(":factionname", $name);
@@ -201,7 +201,7 @@ class FactionLoader
 
 	public function addInvite($player, string $faction, $inviter)
 	{
-		$player = $player->getName();
+		$player = $this->plugin->getServer()->getPlayer($player);
 		$inviter = $inviter->getName();
 		$faction = $this->factionData->prepare("INSERT OR REPLACE INTO invite (player, faction, inviter, timestamp) VALUES (:player, :faction, :inviter, :timestamp )");
 		$faction->bindValue(":player", $player);
@@ -213,7 +213,7 @@ class FactionLoader
 
 	public function acceptInvite($player)
 	{
-		$player = $player->getName();
+		$player = $this->plugin->getServer()->getPlayer($player);
 		$faction = $this->factionData->query("SELECT * FROM invite WHERE player = '{$player}'");
 		$factionArray = $faction->fetchArray(SQLITE3_ASSOC);
 		if (empty($factionArray)) {
@@ -240,7 +240,7 @@ class FactionLoader
 
 	public function declineInvite($player)
 	{
-		$player = $player->getName();
+		$player = $this->plugin->getServer()->getPlayer($player);
 		$faction = $this->factionData->query("SELECT * FROM invite WHERE player = '{$player}'");
 		$factionArray = $faction->fetchArray(SQLITE3_ASSOC);
 		if (empty($factionArray)) {
