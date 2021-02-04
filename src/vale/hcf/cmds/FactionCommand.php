@@ -55,9 +55,9 @@ class FactionCommand extends PluginCommand
                         $sender->sendMessage("");
                         break;
 
-                    case "info":
-                    case "INFO":
-                    case "Info":
+                    case "Who":
+                    case "who":
+                    case "WHO":
                         if (!isset($args[1])) {
                             $sender->sendMessage("Provide a fac name");
                             return false;
@@ -75,6 +75,17 @@ class FactionCommand extends PluginCommand
                             $sender->sendMessage("Home" . $home);
                         }
                         break;
+                        
+					case "INFO":
+					case "Info":
+					case "info":
+						$mgr = HCF::getInstance()->getFactionManager();
+						$fac = $mgr->getPlayerFaction($sender);
+						$dtr = $mgr->getFactionDTR($fac);
+						$sender->sendMessage("Name {$fac}");
+						$sender->sendMessage("DTR {$dtr}");
+						
+						break;
 
                     case "invite":
                     case "INVITE":
