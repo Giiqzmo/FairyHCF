@@ -12,6 +12,7 @@ class FactionLoader
 
     public SQLite3 $factionData;
     public HCF $plugin;
+    public array $factionChat = [];
 
     public function __construct(HCF $plugin)
     {
@@ -246,5 +247,16 @@ class FactionLoader
         }
         return true;
     }
+    
+    public function hasFchatEnabled(Player $player): bool{
+        return isset($this->factionChat[$player->getName]));
+}
+    
+    public function setFactionChat(Player $player){
+    if(!in_array($this->factionChat, $player->getName())
+    array_push($this->factionChat, $player->getName();
+//made this on phone check syntax pls
+    }
+      
 
 }
