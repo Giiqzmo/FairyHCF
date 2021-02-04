@@ -6,7 +6,6 @@ namespace vale\hcf;
 
 use muqsit\invmenu\InvMenu;
 use muqsit\invmenu\InvMenuHandler;
-use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerDeathEvent;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\Player;
@@ -24,7 +23,7 @@ use vale\hcf\manager\DeathBanManager;
 use vale\hcf\manager\DataManager;
 use vale\hcf\manager\tasks\DeathbanTask;
 
-class HCF extends PluginBase implements Listener
+class HCF extends PluginBase
 {
 	/** @var Config $warns */
 	public static Config $warns;
