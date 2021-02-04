@@ -79,18 +79,56 @@ class FactionCommand extends PluginCommand
                     case "invite":
                     case "INVITE":
                     case "Invite":
+					$mgr = new FactionLoader(HCF::getInstance());
                         if (!isset($args[1])) {
                             $sender->sendMessage("Provide a playername");
                             return false;
                         }
                         if($sender->getName() === $args[1]){
-                            $sender->sendMessage("Player cannot be invited");
+                            $sender->sendMessage("You cannot invite yourself");
                         }
-                        if (HCF::getInstance()->getFactionManager()->isInFaction($sender) && HCF::getInstance()->getFactionManager()->isFactionLeader($sender) or HCF::getInstance()->getFactionManager()->isFactionCoLeader($sender) or HCF::getInstance()->getFactionManager()->isFactionCaptain($sender)) {
-                            $mgr = new FactionLoader(HCF::getInstance());
-                            HCF::getInstance()->getFactionManager()->addInvite($args[1], $mgr->getPlayerFaction($sender), $sender);
+
+                        if($mgr->getPlayerFaction($args[1]) === $mgr->getPlayerFaction($sender)){
+                        	$sender->sendMessage("Player is already in Faction");
+                        	return  false;
+						}
+                        if ($mgr->isInFaction($sender) && $mgr->isFactionLeader($sender) or $mgr->isFactionCoLeader($sender) or $mgr->isFactionCaptain($sender)) {
+                           $mgr->addInvite($args[1], $mgr->getPlayerFaction($sender), $sender);
+                           $sender->sendMessage("Invited". (string)$args[1]);
                         }
                         break;
+					case "chat":
+					case "CHAT":
+					case "Chat":
+						if(!isset($args[1])){
+							$sender->sendMessage("/f chat (faction) (public)");
+						}
+
+						if(strtolower($args[1] === "public" or "p" or "pc")){
+							$mgr = new FactionLoader(HCF::getInstance());
+							$mgr->setFactionChat($sender, "off");
+							$sender->sendMessage("Faction Chat Disabled");
+						}
+						if (strtolower($args[1]) === "faction" or "f" or "fc"){
+							$mgr->setFactionChat($sender, "on");
+							$sender->sendMessage("Faction Chat Enabled");
+						}
+						break;
+					case "FRIENDLYFIRE":
+					case "friendlyfire":
+					case "ff":
+					case "FriendlyFire":
+						/*
+						$mgr = HCF::getInstance()->getFactionManager();
+						foreach ($mgr->getMembers() as $member){
+							if($member instanceof Player){
+								if(!$mgr->hasFriendlyFireEnabled($member))
+								$mgr->setFriendlyFire($member,"on");
+							}else{
+								$mgr->setFriendlyFire($member, "off");
+							}
+						}*/
+						#cant do this coz new hasnt made a fricking get members func
                 }
             }
         }
