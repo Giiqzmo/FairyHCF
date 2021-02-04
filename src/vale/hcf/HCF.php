@@ -22,22 +22,33 @@ class HCF extends PluginBase
 {
     /** @var Config $warns */
     public static Config $warns;
+    
     /** @var Config $lives */
     public static Config $lives;
+    
     /** @var Config $deaths */
     public static Config $deaths;
+    
     /** @var Config $kills */
     public static Config $kills;
+    
     /** @var HCF $instance */
     public static HCF $instance;
+    
     /** @var DataManager $dataManager */
     public static DataManager $dataManager;
+    
     public static Config $blacklistedPlayers;
+    
     /** @var Config $deathBannedPlayers */
     public static Config $deathBannedPlayers;
+    
     public static DeathBanManager $deathBanManager;
+    
     public static Config $crateData;
+    
     public static SQLite3 $factionData;
+    
     public static FactionLoader $factionManager;
     /** @var string[] $worlds */
     public array $worlds = ["test", "uh", "ok"];
@@ -120,18 +131,11 @@ class HCF extends PluginBase
         return self::$deaths;
     }
 
-    /**
-     * @return Config
-     */
-
     public function getLivesData(): Config
     {
         return self::$lives;
     }
 
-    /**
-     * @return Config
-     */
     public function getDeathBannedData(): Config
     {
         return self::$deathBannedPlayers;
@@ -154,7 +158,6 @@ class HCF extends PluginBase
 
     public function secondsToTime(int $secs)
     {
-#from php.net
         $s = $secs % 60;
         $m = floor(($secs % 3600) / 60);
         $h = floor(($secs % 86400) / 3600);
