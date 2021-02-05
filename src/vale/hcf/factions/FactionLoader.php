@@ -251,16 +251,16 @@ class FactionLoader
 		$currentTime = time();
 		if ($currentTime - $timeInvited <= 60) {
 			$factionName = $factionArray['factionname'];
-			$this->factionData->query("DELETE FROM invite WHERE player = '{$player()}'");
+			$this->factionData->query("DELETE FROM invite WHERE player = '{$player}'");
 			$player->sendMessage("§eYou have successfully declined §a{$factionName}");
 		} else {
 			$player->sendMessage("§cThe invite you have received timed out.");
-			$this->factionData->query("DELETE FROM invite WHERE player = '{$player()}'");
+			$this->factionData->query("DELETE FROM invite WHERE player = '{$player}'");
 		}
 		return true;
 	}
 
-	public function hasFchatEnabled(Player $player): bool
+	public function hasFChatEnabled(Player $player): bool
 	{
 		return isset($this->factionChat[$player->getName()]);
 	}
@@ -304,4 +304,13 @@ class FactionLoader
 				break;
 		}
 	}
+
+	public function getMembers(string $factionName){
+	    $faction = $this->factionData->query("SELECT player FROM faction WHERE factionname = '{$factionName}'");
+	    $factionArray = $faction->fetchArray(SQLITE3_ASSOC);
+	    $factionPlayers = $factionArray['player'];
+//	    $allMembers = implode($factionPlayers, " ");
+	    return $factionPlayers;
+    }
+
 }
