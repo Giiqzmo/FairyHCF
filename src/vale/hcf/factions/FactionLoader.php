@@ -2,6 +2,7 @@
 
 namespace vale\hcf\factions;
 
+use pocketmine\event\Listener;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
 use SQLite3;
@@ -10,7 +11,8 @@ use vale\hcf\HCF;
 class FactionLoader
 {
 
-	/** @var SQLite3 $factionData */
+
+		/** @var SQLite3 $factionData */
 	public SQLite3 $factionData;
 
 	/** @var HCF $plugin */
@@ -23,13 +25,11 @@ class FactionLoader
 
 	/** @var array $freindlyFire */
 	public array $freindlyFire = [];
-
 	public function __construct(HCF $plugin)
 	{
 		$this->plugin = $plugin;
 		$this->factionData = new SQLite3($this->plugin->getDataFolder() . "Faction.db");
 		$this->factionData->exec("CREATE TABLE IF NOT EXISTS faction (player TEXT PRIMARY KEY COLLATE NOCASE, factionname TEXT, rank TEXT);");
-		$this->factionData->exec("CREATE TABLE IF NOT EXISTS invite (player TEXT PRIMARY  KEY, faction TEXT, inviter TEXT, timestamp INT);");
 		$this->factionData->exec("CREATE TABLE IF NOT EXISTS home (faction TEXT PRIMARY KEY, x INT, y INT, z INT, world TEXT);");
 		$this->factionData->exec("CREATE TABLE IF NOT EXISTS description (faction TEXT PRIMARY KEY, description INT)");
 		$this->factionData->exec("CREATE TABLE IF NOT EXISTS dtr (faction TEXT PRIMARY KEY, dtr INT);");
@@ -39,7 +39,6 @@ class FactionLoader
 
 	public function isInFaction($player): bool
 	{
-		$player = $this->plugin->getServer()->getPlayer($player);
 		$faction = $this->factionData->query("SELECT factionname from faction WHERE player = '$player'");
 		$factionArray = $faction->fetchArray(SQLITE3_ASSOC);
 		if ($factionArray === null) {
@@ -50,7 +49,6 @@ class FactionLoader
 
 	public function getPlayerFaction($player)
 	{
-		$player = $this->plugin->getServer()->getPlayer($player);
 		$faction = $this->factionData->query("SELECT factionname from faction WHERE player = '$player'");
 		$factionArray = $faction->fetchArray(SQLITE3_ASSOC);
 		return $factionArray['factionname'];
@@ -66,30 +64,18 @@ class FactionLoader
 		$faction->bindValue(":world", $world);
 		$faction->execute();
 	}
-
-	public function getHome(string $faction)
-	{
-		if ($this->playerFactionExists($faction)) {
-			$faction = $this->factionData->query("SELECT * FROM home WHERE faction = '$faction' ");
-			$factionArray = $faction->fetchArray(SQLITE3_ASSOC);
-			if (empty($factionArray)) {
-				return "Not set";
-			}
-			return $factionArray;
-		}
-		return null;
-	}
-
-	public function playerFactionExists(string $faction): bool
-	{
-		$factionName = strtolower($faction);
-		$faction = $this->factionData->query("SELECT player FROM faction WHERE lower(factionname) = '$factionName';");
-		$factionArray = $faction->fetchArray(SQLITE3_ASSOC);
-		if (empty($factionArray)) {
-			return false;
-		}
-		return true;
-	}
+      public function getHome(string $faction)
+    {
+        if ($this->playerFactionExists($faction)) {
+            $faction = $this->factionData->query("SELECT * FROM home WHERE faction = '$faction' ");
+            $factionArray = $faction->fetchArray(SQLITE3_ASSOC);
+            if (empty($factionArray)) {
+                return "Not set";
+            }
+            return $factionArray;
+        }
+        return null;
+    }
 
 	public function deleteHome(string $faction, Vector3 $x, Vector3 $y, Vector3 $z, string $world)
 	{
@@ -101,19 +87,27 @@ class FactionLoader
 		$faction->bindValue(":world", $world);
 	}
 
+	public function getFactionDTR(string $faction)
+	{
+		$faction = $this->factionData->query("SELECT dtr FROM dtr WHERE faction = '$faction';");
+		$factionArray = $faction->fetchArray(SQLITE3_ASSOC);
+		return (int)$factionArray["dtr"];
+	}
+
+	public function setDTR(string $name, int $amount)
+	{
+		$faction = $this->factionData->prepare("INSERT OR REPLACE INTO dtr (faction, dtr) VALUES (:faction, :dtr);");
+		$faction->bindValue(":faction", $name);
+		$faction->bindValue(":dtr", $amount);
+		$faction->execute();
+	}
+
 	public function addDTR(string $faction, int $amount)
 	{
 		$faction = $this->factionData->prepare("INSERT OR REPLACE INTO dtr (faction, dtr) VALUES (:faction, :dtr);");
 		$faction->bindValue(":faction", $faction);
 		$faction->bindValue(":dtr", $this->getFactionDTR($faction) + $amount);
 		$faction->execute();
-	}
-
-	public function getFactionDTR(string $faction)
-	{
-		$faction = $this->factionData->query("SELECT dtr FROM dtr WHERE faction = '$faction';");
-		$factionArray = $faction->fetchArray(SQLITE3_ASSOC);
-		return (int)$factionArray["dtr"];
 	}
 
 	public function removeDTR(string $faction, int $amount)
@@ -126,40 +120,30 @@ class FactionLoader
 
 	public function isFactionLeader($player)
 	{
-		$player = $this->plugin->getServer()->getPlayer($player);
 		$faction = $this->factionData->query("SELECT rank FROM faction WHERE player ='$player';");
 		$factionArray = $faction->fetchArray(SQLITE3_ASSOC);
-		if ($factionArray['rank'] === "Leader") {
-			return true;
-		}
-		return false;
+		$factionRank = $factionArray["rank"] == "Leader";
+		return $factionRank;
 	}
 
 	public function isFactionCoLeader($player)
 	{
-		$player = $this->plugin->getServer()->getPlayer($player);
 		$faction = $this->factionData->query("SELECT rank FROM faction WHERE player ='$player';");
 		$factionArray = $faction->fetchArray(SQLITE3_ASSOC);
-		if ($factionArray['rank'] === "Co-Leader") {
-			return true;
-		}
-		return false;
+		$factionRank = $factionArray["rank"] == "Co-Leader";
+		return $factionRank;
 	}
 
 	public function isFactionCaptain($player)
 	{
-		$player = $this->plugin->getServer()->getPlayer($player);
 		$faction = $this->factionData->query("SELECT rank FROM faction WHERE player ='$player';");
 		$factionArray = $faction->fetchArray(SQLITE3_ASSOC);
-		if ($factionArray['rank'] === "Captain") {
-			return true;
-		}
-		return false;
+		$factionRank = $factionArray["rank"] == "Captain";
+		return $factionRank;
 	}
 
 	public function isFactionMember($player)
 	{
-		$player = $this->plugin->getServer()->getPlayer($player);
 		$faction = $this->factionData->query("SELECT rank FROM faction WHERE player ='$player';");
 		$factionArray = $faction->fetchArray(SQLITE3_ASSOC);
 		$factionRank = $factionArray["rank"] == "Member";
@@ -168,119 +152,41 @@ class FactionLoader
 
 	public function createFaction(string $name, $player)
 	{
-		$player = $this->plugin->getServer()->getPlayer($player);
 		$faction = $this->factionData->prepare("INSERT OR REPLACE INTO faction (player, factionname, rank) VALUES (:player, :factionname, :rank)");
-		$faction->bindValue(":player", $player);
+		$faction->bindValue(":player", $player->getName());
 		$faction->bindValue(":factionname", $name);
 		$faction->bindValue(":rank", "Leader");
 		$faction->execute();
-		$this->setDTR($name, 1.12);
+		$this->setDTR($name, 1.05);
 	}
 
-	public function setDTR(string $name, int $amount)
+	public function deleteFaction(string $name, $player)
 	{
-		$faction = $this->factionData->prepare("INSERT OR REPLACE INTO dtr (faction, dtr) VALUES (:faction, :dtr);");
-		$faction->bindValue(":faction", $name);
-		$faction->bindValue(":dtr", $amount);
+		$faction = $this->factionData->prepare("DELETE faction (player, factionname, rank) VALUES (:player, :factionname, :rank)");
+		$faction->bindValue(":player", $player->getName());
+		$faction->bindValue(":factionname", $name);
+		$faction->bindValue(":rank", "Leader");
 		$faction->execute();
 	}
 
-	public function deleteFaction(string $faction)
-	{
-		$this->factionData->query("DELETE FROM faction WHERE factionname = '$faction'");
+	public function playerFactionExists(string $faction): bool{
+		$factionName = strtolower($faction);
+		$faction = $this->factionData->query("SELECT player FROM faction WHERE lower(factionname) = '$factionName';");
+		$factionArray = $faction->fetchArray(SQLITE3_ASSOC);
+		if(empty($factionArray)){
+			return false;
+		}
+		return true;
 	}
 
-	public function getFacByString(string $faction)
-	{
+	public function getFacByString(string $faction){
 		$factionName = strtolower($faction);
-		if ($this->playerFactionExists($factionName)) {
+		if($this->playerFactionExists($factionName)){
 			return $factionName;
 		}
 		return false;
 	}
-
-	public function addInvite($player, string $faction, $inviter)
-	{
-		$player = $this->plugin->getServer()->getPlayer($player);
-		$inviter = $inviter->getName();
-		$faction = $this->factionData->prepare("INSERT OR REPLACE INTO invite (player, faction, inviter, timestamp) VALUES (:player, :faction, :inviter, :timestamp )");
-		$faction->bindValue(":player", $player);
-		$faction->bindValue(":faction", $faction);
-		$faction->bindValue(":inviter", $inviter);
-		$faction->bindValue(":timestamp", time());
-		$faction->execute();
-	}
-
-	public function acceptInvite($player)
-	{
-		$player = $this->plugin->getServer()->getPlayer($player);
-		$faction = $this->factionData->query("SELECT * FROM invite WHERE player = '{$player}'");
-		$factionArray = $faction->fetchArray(SQLITE3_ASSOC);
-		if (empty($factionArray)) {
-			$player->sendMessage("§cYou arent invited to any factions");
-			return false;
-		}
-		$timeInvited = $factionArray['timestamp'];
-		$currentTime = time();
-		if ($currentTime - $timeInvited <= 60) {
-			$factionName = $factionArray['factionname'];
-			$faction = $this->factionData->prepare("INSERT OR REPLACE INTO faction (player, factionname, rank) VALUES (:player, :factionname, :rank)");
-			$faction->bindValue(":player", $player);
-			$faction->bindValue(":faction", $factionName);
-			$faction->bindValue(":rank", "Member");
-			$faction->execute();
-			$this->factionData->query("DELETE FROM invite WHERE player = '{$player}'");
-			$player->sendMessage("§eYou have successfully joined §a{$factionName}");
-		} else {
-			$player->sendMessage("§cThe invite you have received timed out.");
-			$this->factionData->query("DELETE FROM invite WHERE player = '{$player}'");
-		}
-		return true;
-	}
-
-	public function declineInvite($player)
-	{
-		$player = $this->plugin->getServer()->getPlayer($player);
-		$faction = $this->factionData->query("SELECT * FROM invite WHERE player = '{$player}'");
-		$factionArray = $faction->fetchArray(SQLITE3_ASSOC);
-		if (empty($factionArray)) {
-			$player->sendMessage("§cYou arent invited to any factions");
-			return false;
-		}
-		$timeInvited = $factionArray['timestamp'];
-		$currentTime = time();
-		if ($currentTime - $timeInvited <= 60) {
-			$factionName = $factionArray['factionname'];
-			$this->factionData->query("DELETE FROM invite WHERE player = '{$player}'");
-			$player->sendMessage("§eYou have successfully declined §a{$factionName}");
-		} else {
-			$player->sendMessage("§cThe invite you have received timed out.");
-			$this->factionData->query("DELETE FROM invite WHERE player = '{$player}'");
-		}
-		return true;
-	}
-
-	public function hasFChatEnabled(Player $player): bool
-	{
-		return isset($this->factionChat[$player->getName()]);
-	}
-
-	public function setFactionChat(Player $player, string $option)
-	{
-		switch ($option) {
-			case "on":
-				if (!in_array($player->getName(), $this->factionChat)) {
-					array_push($this->factionChat, $player->getName());
-				}
-				break;
-
-			case "off":
-				if (isset($this->factionChat[$player->getName()])) {
-					unset($this->factionChat[$player->getName()]);
-				}
-				break;
-		}
-	}
+}
 
 	public function hasFriendlyFireEnabled(Player $player): bool
 	{
@@ -304,13 +210,3 @@ class FactionLoader
 				break;
 		}
 	}
-
-	public function getMembers(string $factionName){
-	    $faction = $this->factionData->query("SELECT player FROM faction WHERE factionname = '{$factionName}'");
-	    $factionArray = $faction->fetchArray(SQLITE3_ASSOC);
-	    $factionPlayers = $factionArray['player'];
-//	    $allMembers = implode($factionPlayers, " ");
-	    return $factionPlayers;
-    }
-
-}
