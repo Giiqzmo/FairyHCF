@@ -151,6 +151,13 @@ class FactionCommand extends PluginCommand
 							}
 						}*/
 						#cant do this coz new hasnt made a fricking get members func
+                        break;
+
+                    case "test":
+                        $mgr = HCF::getInstance()->getFactionManager();
+                        foreach($mgr->getMembers($mgr->getPlayerFaction($sender)) as $member){
+                            $sender->sendMessage($member);
+                        }
                 }
             }
         }
