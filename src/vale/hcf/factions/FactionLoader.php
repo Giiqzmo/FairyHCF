@@ -10,9 +10,7 @@ use vale\hcf\HCF;
 
 class FactionLoader
 {
-
-
-		/** @var SQLite3 $factionData */
+	/** @var SQLite3 $factionData */
 	public SQLite3 $factionData;
 
 	/** @var HCF $plugin */
@@ -23,8 +21,8 @@ class FactionLoader
 
 	public $dtrFreeze;
 
-	/** @var array $freindlyFire */
-	public array $freindlyFire = [];
+	/** @var array $friendlyFire */
+	public array $friendlyFire = [];
 	public function __construct(HCF $plugin)
 	{
 		$this->plugin = $plugin;
@@ -198,14 +196,14 @@ class FactionLoader
 	{
 		switch ($option) {
 			case "on":
-				if (!in_array($player->getName(), $this->freindlyFire)) {
-					array_push($this->freindlyFire, $player->getName());
+				if (!in_array($player->getName(), $this->friendlyFire)) {
+					array_push($this->friendlyFire, $player->getName());
 				}
 				break;
 
 			case "off":
-				if (isset($this->freindlyFire[$player->getName()])) {
-					unset($this->freindlyFire[$player->getName()]);
+				if (isset($this->friendlyFire[$player->getName()])) {
+					unset($this->friendlyFire[$player->getName()]);
 				}
 				break;
 		}
