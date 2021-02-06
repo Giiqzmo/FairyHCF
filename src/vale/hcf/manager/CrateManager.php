@@ -17,21 +17,25 @@ class CrateManager
     public function cratePreview(Player $player, string $crateType)
     {
         switch ($crateType) {
-            case "Fairy":
+            case "Fairy": //Basic? Get from voting?
                 $fairyPreview = InvMenu::create(MenuIds::TYPE_CHEST);
                 $fairyPreview->setName("FairyPreview");
                 $fairyPreview->readonly(true);
                 $fairyPreview->send($player);
                 break;
-            case "Candy":
+            case "Candy": //Mid-tier loot? like p2?
                 $candyPreview = InvMenu::create(MenuIds::TYPE_CHEST);
                 $candyPreview->setName("CandyPreview");
                 $candyPreview->readonly(true);
                 $candyPreview->send($player);
                 break;
-            case "Vale":
+            case "Sylph": //Abilties/P Items
+                $sylphPreview = InvMenu::create(MenuIds::TYPE_CHEST);
+                $sylphPreview->setName("SylphPreview");
+                $sylphPreview->readonly(true);
+                $sylphPreview->send($player);
                 break;
-            case "Jory":
+            case "Vale":
                 break;
             case "NewCoolBoys":
                 break;
@@ -85,6 +89,29 @@ class CrateManager
                     $player->getInventory()->addItem($fairyAxe);
                 }
                 break;
+        }
+    }
+    
+    public function sendFairyCrateRewards(Player $player)
+    {
+        $chance = mt_rand(1, 2);
+        switch ($chance) {
+                $sbsnowball = Item::get(Item::SNOWBALL)->setCustomName(C::ORANGE . "Switcher Snowball");
+                if (!$player->getInventory()->canAddItem($fairyAxe)) {
+                    $player->getLevel()->dropItem(new Vector3($player->getX(), $player->getY(), $player->getZ()), $fairyAxe);
+                } else {
+                    $player->getInventory()->addItem($sbsnowball);
+                }
+                break;
+            case 2:
+                $ragebrick = Item::get(Item::BRICK)->setCustomName(C::ORANGE . "Rage Brick");
+                if (!$player->getInventory()->canAddItem($ragebrick)) {
+                    $player->getLevel()->dropItem(new Vector3($player->getX(), $player->getY(), $player->getZ()), $fairyAxe);
+                } else {
+                    $player->getInventory()->addItem($ragebrick);
+                }
+                break;
+                //todo add more
         }
     }
 }
