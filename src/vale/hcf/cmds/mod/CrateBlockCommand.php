@@ -47,6 +47,17 @@ class CrateBlockCommand extends PluginCommand implements PluginIdentifiableComma
                         ]);
                         $sender->getInventory()->addItem($fairyCrate);
                         break;
+                    case "slyph":
+                    case "SLYPH":
+                    case "Slyph":
+                        $slyphCrate = Item::get(Item::CHEST);
+                        $slyphCrate->setCustomName("§r§6Slyph Crate");
+                        $slyphCrate->setLore([
+                            '§r§7Right Click to place the §r§dSlyph Crate',
+                            '§r§7 §r§§§lWARNING:: §r§7You can only place this once'
+                        ]);
+                        $sender->getInventory()->addItem($slyphCrate);
+                        break;
                 }
             }
         }
@@ -58,6 +69,7 @@ class CrateBlockCommand extends PluginCommand implements PluginIdentifiableComma
         $message = [
             "§r§dFairy §r§7Crate §r§7((FAIRY)",
             "§r§cCandy §r§7Crate §r§7((CANDY))",
+            "§r§6Slyph §r§7Crate §r§7((SYLPH))",
         ];
         return $message;
     }

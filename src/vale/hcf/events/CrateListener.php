@@ -42,9 +42,24 @@ class CrateListener implements Listener
                 } else {
                     $ev->setCancelled();
                     $player->sendMessage("Block Already Placed");
-
                 }
                 break;
+            case "Sylph":
+                if (!$data->exists("SylphCrate")) {
+                    $data->set("SylphCrate", [
+                        "Name" => "SylphCrate",
+                        "PosX" => $block->getX(),
+                        "PosY" => $block->getY(),
+                        "PosZ" => $block->getZ(),
+                        "Level" => $level
+                    ]);
+                    $data->save();
+                } else {
+                    $ev->setCancelled();
+                    $player->sendMessage("Block Already Placed");
+                }
+                break;    
+                //todo add more
         }
     }
 
