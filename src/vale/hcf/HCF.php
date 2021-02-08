@@ -18,6 +18,7 @@ use vale\hcf\events\PlayerListener;
 use vale\hcf\factions\FactionLoader;
 use vale\hcf\manager\DataManager;
 use vale\hcf\manager\DeathBanManager;
+use vale\hcf\manager\KitManager;
 use vale\hcf\manager\tasks\DeathbanTask;
 
 class HCF extends PluginBase
@@ -46,12 +47,15 @@ class HCF extends PluginBase
     public static Config $deathBannedPlayers;
     
     public static DeathBanManager $deathBanManager;
+	
+    public static KitManager $kitManager;
     
     public static Config $crateData;
     
     public static SQLite3 $factionData;
     
     public static FactionLoader $factionManager;
+	
     /** @var string[] $worlds */
     public array $worlds = ["test", "uh", "ok"];
 
@@ -88,6 +92,7 @@ class HCF extends PluginBase
         self::$crateData = new Config($this->getDataFolder() . "crates/" . "CrateData.yml");
         self::$deathBannedPlayers = new Config($this->getDataFolder() . "deathbannedplayers.yml");
         self::$blacklistedPlayers = new Config($this->getDataFolder() . "blacklistedplayers.yml");
+	self::$kitManager = new KitManager();
         self::$dataManager = new DataManager($this);
         self::$deathBanManager = new DeathBanManager();
     }
@@ -108,7 +113,7 @@ class HCF extends PluginBase
             new BlacklistCommand($this),
             new WarnCommand($this),
             new FactionCommand($this),
-			new SotwCommand($this),
+	    new SotwCommand($this),
         ]);
 
     }
@@ -148,6 +153,11 @@ class HCF extends PluginBase
     public function getDeathBanManager(): DeathBanManager
     {
         return self::$deathBanManager;
+    }
+	
+    public function getKitManager(): KitManager
+    {
+    	return self::$kitManager;
     }
 
     public function getDataManager(): DataManager
