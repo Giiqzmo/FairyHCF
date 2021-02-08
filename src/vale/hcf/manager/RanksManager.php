@@ -1,7 +1,12 @@
 <?php
+namespace vale\hcf\manager;
 
 class RanksManager{
 
-public function __construct(HCF $plugin){}
+  public $database;
+  
+public function __construct(HCF $plugin){
+$this->database = mysqli_connect();
+}
 
 }
