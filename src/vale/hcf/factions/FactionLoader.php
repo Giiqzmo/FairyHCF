@@ -255,24 +255,14 @@ class FactionLoader
 
     public function hasFriendlyFireEnabled(Player $player): bool
     {
-        return isset($this->factionChat[$player->getName()]);
+        return isset($this->friendlyFire[$player->getName()]);
     }
 
 
-    public function setFriendlyFire(Player $player, string $option)
-    {
-        switch ($option) {
-            case "on":
-                if (!in_array($player->getName(), $this->friendlyFire)) {
-                    array_push($this->friendlyFire, $player->getName());
-                }
-                break;
-
-            case "off":
-                if (isset($this->friendlyFire[$player->getName()])) {
-                    unset($this->friendlyFire[$player->getName()]);
-                }
-                break;
-        }
-    }
-}
+    public function setFriendlyFire(Player $player){
+        if(isset($this->friendlyFire[$player->getName()])){
+        unset($this->friendlyFire[$player->getName()];
+         }else{
+             array_push($player->getName(), $this->friendlyFire);
+         }
+              }
