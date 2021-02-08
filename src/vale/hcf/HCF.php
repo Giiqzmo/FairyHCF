@@ -3,22 +3,21 @@
 namespace vale\hcf;
 #Will use sessions instead of this gay data saving method
 #Please Put ALL UPDATES IN #READ.MD
-
-use vale\hcf\cmds\SotwCommand;
-use vale\hcf\events\FactionListener;
+use SQLite3;
 use muqsit\invmenu\InvMenuHandler;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\Config;
-use SQLite3;
-use vale\hcf\cmds\FactionCommand;
-use vale\hcf\cmds\mod\BlacklistCommand;
-use vale\hcf\cmds\mod\WarnCommand;
+use vale\hcf\cmds\{
+    BlacklistCommand, FactionCommand, WarnCommand,
+};
 use vale\hcf\events\CrateListener;
 use vale\hcf\events\PlayerListener;
 use vale\hcf\factions\FactionLoader;
 use vale\hcf\manager\DataManager;
 use vale\hcf\manager\DeathBanManager;
 use vale\hcf\manager\tasks\DeathbanTask;
+use vale\hcf\cmds\SotwCommand;
+use vale\hcf\events\FactionListener
 
 class HCF extends PluginBase
 {
