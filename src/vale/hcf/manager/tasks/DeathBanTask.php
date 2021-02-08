@@ -31,6 +31,7 @@ class DeathbanTask extends Task
                 HCF::$deathBannedPlayers->set($p, $time - 1);
                 HCF::$deathBannedPlayers->save();
                 //todo lives
+                echo "Revied {$deathbannedPlayers} ";
             }
         }
     }
