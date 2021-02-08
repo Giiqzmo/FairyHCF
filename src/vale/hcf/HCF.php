@@ -1,23 +1,24 @@
 <?php
 
 namespace vale\hcf;
-#Will use sessions instead of this gay data saving method
-#Please Put ALL UPDATES IN #READ.MD
+
 use SQLite3;
 use muqsit\invmenu\InvMenuHandler;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\Config;
 use vale\hcf\cmds\{
-    BlacklistCommand, FactionCommand, WarnCommand,
+    BlacklistCommand, FactionCommand, WarnCommand, SotwCommand
 };
-use vale\hcf\events\CrateListener;
-use vale\hcf\events\PlayerListener;
-use vale\hcf\factions\FactionLoader;
-use vale\hcf\manager\DataManager;
-use vale\hcf\manager\DeathBanManager;
+use vale\hcf\events\{
+    CrateListener, PlayerListener
+};
+use vale\hcf\factions\{
+   FactionLoader, FactionListener
+};
+use vale\hcf\manager\{
+   DataManager, DeathBanManager, CrateManager
+};
 use vale\hcf\manager\tasks\DeathbanTask;
-use vale\hcf\cmds\SotwCommand;
-use vale\hcf\events\FactionListener
 
 class HCF extends PluginBase
 {
@@ -50,7 +51,7 @@ class HCF extends PluginBase
     
     public static SQLite3 $factionData;
     
-    public static FactionLoader $factionManager;
+    public FactionLoader $factionManager;
     /** @var string[] $worlds */
     public array $worlds = ["test", "uh", "ok"];
 
@@ -64,6 +65,11 @@ class HCF extends PluginBase
         if (!InvMenuHandler::isRegistered()) {
             InvMenuHandler::register($this);
         }
+        @mkdir($this->getDataFolder() . "lives");
+        @mkdir($this->getDataFolder() . "deaths");
+        @mkdir($this->getDataFolder() . "crates");
+        @mkdir($this->getDataFolder() . "warns");
+        @mkdir($this->getDataFolder() . "kills");
         self::$instance = $this;
         $this->initDatabase();
         $this->loadWorlds();
@@ -75,11 +81,6 @@ class HCF extends PluginBase
     function initDatabase()
     {
         self::$factionManager = new FactionLoader($this);
-        @mkdir($this->getDataFolder() . "lives");
-        @mkdir($this->getDataFolder() . "deaths");
-        @mkdir($this->getDataFolder() . "crates");
-        @mkdir($this->getDataFolder() . "warns");
-        @mkdir($this->getDataFolder() . "kills");
         self::$lives = new Config($this->getDataFolder() . "lives/" . "lives.yml");
         self::$deaths = new Config($this->getDataFolder() . "deaths/" . "deaths.yml");
         self::$kills = new Config($this->getDataFolder() . "kills/" . "kills.yml");
