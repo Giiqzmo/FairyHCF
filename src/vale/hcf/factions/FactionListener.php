@@ -1,6 +1,6 @@
 <?php
 
-namespace vale\hcf\\factions;
+namespace vale\hcf\factions;
 
 use pocketmine\event\Listener;
 use vale\hcf\HCF;
