@@ -10,6 +10,9 @@ use vale\hcf\HCF;
 
 class FactionLoader
 {
+    
+    const SPAWN = 1;
+        
     /** @var SQLite3 $factionData */
     public SQLite3 $factionData;
 
@@ -274,5 +277,14 @@ class FactionLoader
                 }
                 break;
         }
+    }
+    
+    public function isSpawnClaim(Vector3 $pos): bool
+    {
+        $x = $pos->getX();
+        $z = $pos->getZ();
+        $result = $this->factionData->query("SELECT claims WHERE $x <= x1 AND $x >= x2 AND $z <= z1 AND $z >= z2 AND type = 1;");
+        $array = $result->fetchArray(SQLITE3_ASSOC);
+        return empty($array) == false;
     }
 }
