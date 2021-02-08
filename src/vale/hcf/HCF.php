@@ -11,16 +11,16 @@ use vale\hcf\cmds\{
 };
 
 use vale\hcf\cmds\mod\{
-BlacklistCommand, WarnCommand, CrateBlockCommand
+	BlacklistCommand, WarnCommand, CrateBlockCommand
 };
 use vale\hcf\events\{
-    CrateListener, PlayerListener
+	CrateListener, PlayerListener
 };
 use vale\hcf\factions\{
-   FactionLoader, FactionListener
+	FactionLoader, FactionListener
 };
 use vale\hcf\manager\{
-   DataManager, DeathBanManager, CrateManager, RanksManager
+	DataManager, DeathBanManager, CrateManager, RanksManager
 };
 use vale\hcf\manager\tasks\{
 	DeathbanTask, BroadcastTask
@@ -32,12 +32,11 @@ class HCF extends PluginBase
 
 	/** @var HCF $instance */
 	public static HCF $instance;
-
-	public static Config $crateData;
-
+	
 	public static SQLite3 $factionData;
 
 	public static FactionLoader $factionManager;
+	
 	/** @var string[] $worlds */
 	public array $worlds = ["test", "uh", "ok"];
 
@@ -54,11 +53,11 @@ class HCF extends PluginBase
 		self::$instance = $this;
 		YamlProvider:: __initiateRegistration();
 		$this->initFactions();
-        $this->loadWorlds();
-        $this->loadCommands();
-        $this->initListeners();
-        $this->getScheduler()->scheduleRepeatingTask(new DeathbanTask($this), 20);
-    }
+		$this->loadWorlds();
+		$this->loadCommands();
+		$this->initListeners();
+		$this->getScheduler()->scheduleRepeatingTask(new DeathbanTask($this), 20);
+	}
 
 	function initFactions()
 	{
