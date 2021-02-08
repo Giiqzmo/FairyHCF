@@ -82,7 +82,7 @@ class FactionCommand extends PluginCommand
 
 						$mgr = HCF::getInstance()->getFactionManager();
 						if ($mgr->isInFaction($sender)) {
-							$fac = $mgr->getPlayerFaction($sender);
+							$fac = $mgr->getPlayerFaction($sender->getName());
 							$dtr = $mgr->getFactionDTR($fac);
 							$sender->sendMessage("Name {$fac}");
 							$sender->sendMessage("DTR {$dtr}");
@@ -155,13 +155,17 @@ class FactionCommand extends PluginCommand
 
 					case "test":
 						$mgr = HCF::getInstance()->getFactionManager();
-						$fac = $mgr->getPlayerFaction($sender);
-						foreach ($mgr->getMembers($sender) as $member) {
-							if ($member instanceof Player) {
-								$member->sendMessage("TEST");
-							}
-						}
+						$fac = $mgr->getPlayerFaction($sender->getName());
+                        $sender->sendMessage("Leaders: " . $mgr->getAllLeaders($fac));
+                        $sender->sendMessage("Co-Leaders: " . $mgr->getAllCaptains($fac));
+                        $sender->sendMessage("Captains: " . $mgr->getAllCaptains($fac));
+                        $sender->sendMessage("Members: " . $mgr->getAllMembers($fac));
 						break;
+                    case "invite2":
+                        $mgr = HCF::getInstance()->getFactionManager();
+                        $fac = $mgr->getPlayerFaction($sender->getName());
+                        $mgr->addMember($fac, $args[1]);
+                        break;
 				}
 			}
 		}
