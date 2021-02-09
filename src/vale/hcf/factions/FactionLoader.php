@@ -272,4 +272,32 @@ class FactionLoader
     {
         return isset($this->friendlyFire[$player->getName()]);
     }
+
+
+	public function showFactionPlayersTag(Player $player)
+		{
+			foreach ($this->plugin->getServer()->getOnlinePlayers() as $onlinePlayer) {
+				if ($this->isInFaction($onlinePlayer)) {
+					$fac = $this->getPlayerFaction($player->getName());
+					foreach ($this->getAllMembers($fac) as $facMember) {
+						$pk = new SetActorDataPacket();
+						$pk->metadata = [Entity::DATA_NAMETAG => [Entity::DATA_TYPE_STRING, "§a" . $facMember->getName()]];
+						$pk->entityRuntimeId = $onlinePlayer->getId();
+						$player->dataPacket($pk);
+					}
+				}else{
+					$pk = new SetActorDataPacket();
+					$pk->metadata = [Entity::DATA_NAMETAG => [Entity::DATA_TYPE_STRING, "§c" . $onlinePlayer->getName()]];
+					$pk->entityRuntimeId = $onlinePlayer->getId();
+					$player->dataPacket($pk);
+				}
+			}
+		}
+	public function setFriendlyFire(Player $player){
+		if(isset($this->friendlyFire[$player->getName()])){
+			unset($this->friendlyFire[$player->getName()]);
+		}else{
+			array_push($this->friendlyFire, $player->getName());
+		}
+	}
 }
