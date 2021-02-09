@@ -47,7 +47,7 @@ class ScoreboardTask extends Task
 			$scoreboard[] = "§6§lTeam§r§7: " . (string)$this->faction;
 		}
 		if(SotwManager::isEnable()){
-			$scoreboard[] = "§r§6§lSOTW§r§7:§r§e " . HCF::getTimeToFullString(SotwManager::getTime());
+			$scoreboard[] = "§r§6§lStart Of The World§r§7:§r§e " . HCF::getTimeToFullString(SotwManager::getTime());
 		}
 
 		if(count($scoreboard) >= 1){
