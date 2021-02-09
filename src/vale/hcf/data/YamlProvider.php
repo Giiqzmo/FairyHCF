@@ -57,6 +57,8 @@ class YamlProvider
 		self::$dataManager = new DataManager(HCF::getInstance());
 		self::$deathBanManager = new DeathBanManager();
 		self::$config = new Config(HCF::getInstance()->getDataFolder() . "serverprefrences.yml", Config::YAML);
+
+		self::$config->save();
 		HCF::getInstance()->saveResource("serverprefrences.yml");
 	}
 }
