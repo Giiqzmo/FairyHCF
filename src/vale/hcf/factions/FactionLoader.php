@@ -74,7 +74,7 @@ class FactionLoader{
 			}
 			return $factionArray;
 		}
-		return null;
+		return "Not Set";
 	}
 
 	public function deleteHome(string $faction, Vector3 $x, Vector3 $y, Vector3 $z, string $world)
@@ -91,7 +91,7 @@ class FactionLoader{
 	{
 		$faction = $this->factionData->query("SELECT dtr FROM dtr WHERE faction = '$faction';");
 		$factionArray = $faction->fetchArray(SQLITE3_ASSOC);
-		return $factionArray['dtr'];
+		return $factionArray['dtr'] ?? 0;
 	}
 
 	public function setDTR(string $name, int $amount)
@@ -269,8 +269,6 @@ class FactionLoader{
 	}
 	public function addInvite($player, string $faction, $inviter)
 	{
-		$player = $player->getName();
-		$inviter = $inviter->getName();
 		$faction = $this->factionData->prepare("INSERT OR REPLACE INTO invite (player, faction, inviter, timestamp) VALUES (:player, :faction, :inviter, :timestamp )");
 		$faction->bindValue(":player", $player);
 		$faction->bindValue(":faction", $faction);
@@ -282,7 +280,7 @@ class FactionLoader{
 	public function acceptInvite($player)
 	{
 		$player = $player->getName();
-		$faction = $this->factionData->query("SELECT * FROM invite WHERE player = '{$player}'");
+		$faction = $this->factionData->query("SELECT * FROM invite WHERE player = '$player'");
 		$factionArray = $faction->fetchArray(SQLITE3_ASSOC);
 		if (empty($factionArray)) {
 			$player->sendMessage("§cYou arent invited to any factions");
@@ -290,9 +288,9 @@ class FactionLoader{
 		}
 		return true;
 	}
-		public function declineInvite($player){
+	public function declineInvite($player){
 
-		$faction = $this->factionData->query("SELECT * FROM invite WHERE player = '{$player}'");
+		$faction = $this->factionData->query("SELECT * FROM invite WHERE player = '$player'");
 		$factionArray = $faction->fetchArray(SQLITE3_ASSOC);
 		if (empty($factionArray)) {
 			$player->sendMessage("§cYou arent invited to any factions");
@@ -302,11 +300,11 @@ class FactionLoader{
 		$currentTime = time();
 		if ($currentTime - $timeInvited <= 60) {
 			$factionName = $factionArray['factionname'];
-			$this->factionData->query("DELETE FROM invite WHERE player = '{$player()}'");
+			$this->factionData->query("DELETE FROM invite WHERE player = '$player'");
 			$player->sendMessage("§eYou have successfully declined §a{$factionName}");
 		} else {
 			$player->sendMessage("§cThe invite you have received timed out.");
-			$this->factionData->query("DELETE FROM invite WHERE player = '{$player()}'");
+			$this->factionData->query("DELETE FROM invite WHERE player = '$player'");
 			return false;
 		}
 
@@ -319,11 +317,11 @@ class FactionLoader{
 			$faction->bindValue(":faction", $factionName);
 			$faction->bindValue(":rank", "Member");
 			$faction->execute();
-			$this->factionData->query("DELETE FROM invite WHERE player = '{$player}'");
+			$this->factionData->query("DELETE FROM invite WHERE player = '$player'");
 			$player->sendMessage("§eYou have successfully joined §a{$factionName}");
 		} else {
 			$player->sendMessage("§cThe invite you have received timed out.");
-			$this->factionData->query("DELETE FROM invite WHERE player = '{$player}'");
+			$this->factionData->query("DELETE FROM invite WHERE player = '$player'");
 		}
 		return true;
 	}
