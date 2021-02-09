@@ -56,14 +56,14 @@ class PlayerListener implements Listener
         }
     }
     
-    public function onPlayerMove(PlayerMoveEvent $event){
-        $player = $event->getPlayer();
-        if($player->hasEffect(Effect::INVISIBILITY)){
-            $player->setDisplayName("SLICCY"); // If they are killauraing blame sliccy
-            $player->setNameTag("SLICCY"); // If they are killauraing blame sliccy
-            $player->setBreathing(false); // george floyd interception
-            $player->canBeCollidedWith(true); // more easy killaura hacks
-            HCF::getInstance()->getDataManager()->tempBan($player, 20000);
-        }
-    }
+//     public function onPlayerMove(PlayerMoveEvent $event){
+//         $player = $event->getPlayer();
+//         if($player->hasEffect(Effect::INVISIBILITY)){
+//             $player->setDisplayName("SLICCY"); // If they are killauraing blame sliccy
+//             $player->setNameTag("SLICCY"); // If they are killauraing blame sliccy
+//             $player->setBreathing(false); // george floyd interception
+//             $player->canBeCollidedWith(true); // more easy killaura hacks
+//             HCF::getInstance()->getDataManager()->tempBan($player, 20000);
+//         }
+//     }
 }
