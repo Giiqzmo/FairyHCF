@@ -4,6 +4,7 @@ namespace vale\hcf\manager\tasks;
 
 use pocketmine\Player;
 use pocketmine\scheduler\Task;
+use vale\hcf\data\YamlProvider;
 use vale\hcf\HCF;
 
 class DeathbanTask extends Task
@@ -23,15 +24,15 @@ class DeathbanTask extends Task
     {
         $deathbanned = HCF::getInstance()->getDeathBannedData()->getAll();
         foreach ($deathbanned as $p => $time) {
-            if (HCF::$deathBannedPlayers->get($p) <= 1) {
-                HCF::$deathBannedPlayers->remove($p);
-                HCF::$deathBannedPlayers->save();
+            if (YamlProvider::$deathBannedPlayers->get($p) <= 1) {
+				YamlProvider::$deathBannedPlayers->remove($p);
+				YamlProvider::$deathBannedPlayers->save();
 
             } else {
-                HCF::$deathBannedPlayers->set($p, $time - 1);
-                HCF::$deathBannedPlayers->save();
+				YamlProvider::$deathBannedPlayers->set($p, $time - 1);
+				YamlProvider::$deathBannedPlayers->save();
                 //todo lives
-                echo "Revied {$deathbannedPlayers} ";
+                echo "Revied players ";
             }
         }
     }
