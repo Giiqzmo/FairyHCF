@@ -10,33 +10,30 @@ use vale\hcf\cmds\{
 	FactionCommand, SotwCommand
 };
 
-use vale\hcf\cmds\mod\{
-	BlacklistCommand, WarnCommand, CrateBlockCommand
-};
+use vale\hcf\cmds\mod\{BlacklistCommand, SpawnEntityCommand, WarnCommand, CrateBlockCommand};
 use vale\hcf\events\{
 	CrateListener, PlayerListener
 };
 use vale\hcf\factions\{
 	FactionLoader, FactionListener
 };
-use vale\hcf\manager\{
-	DataManager, DeathBanManager, CrateManager, RanksManager
-};
+use vale\hcf\manager\{DataManager, DeathBanManager, CrateManager, EntityManager, RanksManager, ScoreBoardManager};
 use vale\hcf\manager\tasks\{
 	DeathbanTask, BroadcastTask
 };
 use vale\hcf\data\YamlProvider;
+use vale\hcf\entities\PartnerPackageEntity;
 
 class HCF extends PluginBase
 {
 
 	/** @var HCF $instance */
 	public static HCF $instance;
-	
+
 	public static SQLite3 $factionData;
 
 	public static FactionLoader $factionManager;
-	
+
 	/** @var string[] $worlds */
 	public array $worlds = ["test", "uh", "ok"];
 
@@ -52,6 +49,7 @@ class HCF extends PluginBase
 		}
 		self::$instance = $this;
 		YamlProvider:: __initiateRegistration();
+		EntityManager::registerEntites();
 		$this->initFactions();
 		$this->loadWorlds();
 		$this->loadCommands();
@@ -82,6 +80,7 @@ class HCF extends PluginBase
 			new WarnCommand($this),
 			new FactionCommand($this),
 			new SotwCommand($this),
+			new SpawnEntityCommand("spawnentity",$this)
 		]);
 
 	}
@@ -147,5 +146,10 @@ class HCF extends PluginBase
 		$M = floor($secs / 2592000);
 
 		return "$d days $h hours $m minutes $s seconds";
+	}
+
+	public function onDisable()
+	{
+
 	}
 }
