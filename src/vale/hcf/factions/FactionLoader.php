@@ -257,6 +257,26 @@ class FactionLoader
 		$faction->bindValue(":rank", "Member");
 		$faction->execute();
 	}
+	
+	public function showFactionPlayersTag(Player $player)
+		{
+			foreach ($this->plugin->getServer()->getOnlinePlayers() as $onlinePlayer) {
+				if ($this->isInFaction($onlinePlayer)) {
+					$fac = $this->getPlayerFaction($player->getName());
+					foreach ($this->getAllMembers($fac) as $facMember) {
+						$pk = new SetActorDataPacket();
+						$pk->metadata = [Entity::DATA_NAMETAG => [Entity::DATA_TYPE_STRING, "§a" . $facMember->getName()]];
+						$pk->entityRuntimeId = $onlinePlayer->getId();
+						$player->dataPacket($pk);
+					}
+				}else{
+					$pk = new SetActorDataPacket();
+					$pk->metadata = [Entity::DATA_NAMETAG => [Entity::DATA_TYPE_STRING, "§c" . $onlinePlayer->getName()]];
+					$pk->entityRuntimeId = $onlinePlayer->getId();
+					$player->dataPacket($pk);
+				}
+			}
+		}
 
 	public function hasFriendlyFireEnabled(Player $player): bool
 	{
