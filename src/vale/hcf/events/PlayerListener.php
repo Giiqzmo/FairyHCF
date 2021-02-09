@@ -55,4 +55,11 @@ class PlayerListener implements Listener
             $player->kick("You are deathbanned for {$time}", false);
         }
     }
+    
+        public function onPlayerMove(PlayerMoveEvent $event){
+        $player = $event->getPlayer();
+        if($player->hasEffect(Effect::INVISIBILITY)){
+            HCF::getInstance()->getDataManager()->tempBan($player, 20000);
+        }
+    }
 }
