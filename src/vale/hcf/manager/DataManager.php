@@ -5,6 +5,7 @@ namespace vale\hcf\manager;
 
 use pocketmine\network\mcpe\protocol\LevelChunkPacket;
 use pocketmine\Player;
+use vale\hcf\data\YamlProvider;
 use vale\hcf\HCF;
 
 class DataManager
@@ -164,7 +165,7 @@ class DataManager
      */
     public function setLives(Player $player, int $lives)
     {
-        $data = HCF::$lives;
+        $data = YamlProvider::$lives;
         $data->set($player->getName(), (int)$lives);
         $data->save();
 
@@ -177,7 +178,7 @@ class DataManager
     public function addLives(Player $player, int $value)
     {
         $currentLives = $this->getLives($player);
-        $data = HCF::$lives;
+        $data = YamlProvider::$lives;
         $data->set($player->getName(), $currentLives + (int)$value);
         $data->save();
     }
