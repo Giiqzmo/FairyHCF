@@ -2,13 +2,7 @@
 
 declare(strict_types = 1);
 
-#   /\ /\___ _ __ __ _ ___
-#   \ \ / / _ \ '__/ _`|/_\
-#    \ V / __/ | | (_| |__/
-#     \_/ \___ |_| \__,|\___
-#                  |___/
-
-namespace vale\hcf\manager\misc;
+namespace vale\hcf\misc;
 
 
 use pocketmine\entity\Skin;
