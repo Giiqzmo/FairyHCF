@@ -12,15 +12,12 @@ use pocketmine\inventory\transaction\action\SlotChangeAction;
 use pocketmine\item\enchantment\Enchantment;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\Item;
-use pocketmine\item\ItemIds;
 use pocketmine\level\Level;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\Player;
 use vale\hcf\HCF;
-use vale\hcf\items\RewardIDS;
-use vale\hcf\items\RewardsManager;
-use vale\hcf\manager\misc\IEManager;
+use vale\hcf\misc\IEManager;
 
 class PartnerPackageEntity extends Human {
 
