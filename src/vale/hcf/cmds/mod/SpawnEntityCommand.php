@@ -5,6 +5,7 @@ namespace vale\hcf\cmds\mod;
 use pocketmine\command\CommandSender;
 use pocketmine\command\PluginCommand;
 use pocketmine\entity\Entity;
+use pocketmine\math\Vector3;
 use pocketmine\Player;
 use pocketmine\plugin\Plugin;
 use vale\hcf\entities\PartnerPackageEntity;
@@ -26,10 +27,8 @@ class SpawnEntityCommand extends PluginCommand{
 			}
 			switch ($args[0]) {
 				case "partner":
-					$bot = new PartnerPackageEntity($sender->getLevel(), Entity::createBaseNBT($sender->asVector3()), $sender);
-
+					$bot = new PartnerPackageEntity($sender->getLevel(), Entity::createBaseNBT($sender->asVector3()));
 					$bot->spawnToAll();
-					$bot->setCanSaveWithChunk(true);
 					break;
 			}
 		}
