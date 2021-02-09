@@ -23,6 +23,7 @@ use vale\hcf\manager\tasks\{
 };
 use vale\hcf\data\YamlProvider;
 use vale\hcf\entities\PartnerPackageEntity;
+use vale\hcf\manager\SOTW;
 
 class HCF extends PluginBase
 {
@@ -79,7 +80,7 @@ class HCF extends PluginBase
 			new BlacklistCommand($this),
 			new WarnCommand($this),
 			new FactionCommand($this),
-			new SotwCommand($this),
+			new SotwCommand(),
 			new SpawnEntityCommand("spawnentity",$this)
 		]);
 
@@ -135,17 +136,10 @@ class HCF extends PluginBase
 	{
 		return self::$factionData;
 	}
+	
 
-
-	public function secondsToTime(int $secs)
-	{
-		$s = $secs % 60;
-		$m = floor(($secs % 3600) / 60);
-		$h = floor(($secs % 86400) / 3600);
-		$d = floor(($secs % 2592000) / 86400);
-		$M = floor($secs / 2592000);
-
-		return "$d days $h hours $m minutes $s seconds";
+	public static function getTimeToFullString(Int $time) : String {
+		return gmdate("H:i:s", $time);
 	}
 
 	public function onDisable()
