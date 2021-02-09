@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace vale\hcf\manager\misc;
+namespace vale\hcf\misc;
 
 use pocketmine\entity\Skin;
 
