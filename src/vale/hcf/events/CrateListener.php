@@ -4,6 +4,7 @@ namespace vale\hcf\events;
 
 use pocketmine\event\block\BlockPlaceEvent;
 use pocketmine\event\Listener;
+use vale\hcf\data\YamlProvider;
 use vale\hcf\HCF;
 
 class CrateListener implements Listener
@@ -25,7 +26,7 @@ class CrateListener implements Listener
         $level = (string)$block->getLevel()->getName();
         $l = $block->getLevel();
         $names = explode("\n", $hand->getCustomName());
-        $data = HCF::$crateData;
+        $data = YamlProvider::$crateData;
         $ev->setCancelled();
         $name = $block->getName();
         switch ($name) {
