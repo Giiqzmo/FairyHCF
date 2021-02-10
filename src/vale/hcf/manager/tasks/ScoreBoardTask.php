@@ -43,7 +43,7 @@ class ScoreboardTask extends Task
 		$this->faction = $facs->getPlayerFaction($player->getName());
 		/** @var array */
 		$scoreboard = [];
-		if($facs->isInFaction($player)){
+		if($facs->isInFaction($player->getName())){
 			$scoreboard[] = "§6§lTeam§r§7: " . (string)$this->faction;
 		}
 		if(SotwManager::isEnable()){
