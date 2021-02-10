@@ -5,9 +5,18 @@ namespace vale\hcf\manager;
 use pocketmine\Player;
 use vale\hcf\data\YamlProvider;
 use vale\hcf\HCF;
+use mysqli;
 
 class DeathBanManager
 {
+    
+    public $host = "";
+    public $user = "";
+    public $password = "";
+    
+    public function __construct(){
+    $db = new mysqli();
+    }
 
     public function setDeathBan(Player $player, int $value)
     {
