@@ -9,7 +9,8 @@ use pocketmine\Player;
 use SQLite3;
 use vale\hcf\HCF;
 
-class FactionLoader{
+class FactionLoader
+{
 	/** @var SQLite3 $factionData */
 	public SQLite3 $factionData;
 
@@ -22,7 +23,7 @@ class FactionLoader{
 	public $dtrFreeze;
 
 	/** @var array $friendlyFire */
-	public array $friendlyFire = [];
+	public static array $friendlyFire = [];
 
 	public function __construct(HCF $plugin)
 	{
@@ -35,22 +36,18 @@ class FactionLoader{
 		$this->factionData->exec("CREATE TABLE IF NOT EXISTS balance (faction TEXT PRIMARY KEY, balance INT)");
 	}
 
+    public function isInFaction(string $name) : bool
+    {
 
-	public function isInFaction($player): bool
-	{
-		$faction = $this->factionData->query("SELECT factionname from faction WHERE player = '$player'");
-		$factionArray = $faction->fetchArray(SQLITE3_ASSOC);
-		if ($factionArray === null) {
-			return false;
-		}
-		return true;
-	}
-
+        $result = $this->factionData->query("SELECT * FROM faction WHERE player = '$name';");
+        $array = $result->fetchArray(SQLITE3_ASSOC);
+        return empty($array) == false;
+    }
 	public function getPlayerFaction($player)
 	{
 		$faction = $this->factionData->query("SELECT factionname FROM faction WHERE player = '$player'");
 		$factionArray = $faction->fetchArray(SQLITE3_BOTH);
-		return $factionArray['factionname'];
+		return $factionArray['factionname'] ?? "N/A";
 	}
 
 	public function setHome(string $faction, Vector3 $x, Vector3 $y, Vector3 $z, string $world)
@@ -216,57 +213,63 @@ class FactionLoader{
 	}
 
 
-	public function getFactionLeaders(string $factionName){
+	public function getFactionLeaders(string $factionName)
+	{
 		$test = $this->getAllMembers($factionName);
 		$list = [];
-		foreach($test as $tests){
-			if($this->isFactionLeader($tests)){
+		foreach ($test as $tests) {
+			if ($this->isFactionLeader($tests)) {
 				$list[] = $tests;
 			}
 		}
 		return count($list) < 1 ? "None" : implode(", ", $list);
 	}
 
-	public function getFactionCoLeader(string $factionName){
+	public function getFactionCoLeader(string $factionName)
+	{
 		$test = $this->getAllMembers($factionName);
 		$list = [];
-		foreach($test as $tests){
-			if($this->isFactionCoLeader($tests)){
+		foreach ($test as $tests) {
+			if ($this->isFactionCoLeader($tests)) {
 				$list[] = $tests;
 			}
 		}
 		return count($list) < 1 ? "None" : implode(", ", $list);
 	}
 
-	public function getFactionCaptains(string $factionName){
+	public function getFactionCaptains(string $factionName)
+	{
 		$test = $this->getAllMembers($factionName);
 		$list = [];
-		foreach($test as $tests){
-			if($this->isFactionCaptain($tests)){
+		foreach ($test as $tests) {
+			if ($this->isFactionCaptain($tests)) {
 				$list[] = $tests;
 			}
 		}
 		return count($list) < 1 ? "None" : implode(", ", $list);
 	}
 
-	public function getFactionMembers(string $factionName){
+	public function getFactionMembers(string $factionName)
+	{
 		$test = $this->getAllMembers($factionName);
 		$list = [];
-		foreach($test as $tests){
-			if($this->isFactionMember($tests)){
+		foreach ($test as $tests) {
+			if ($this->isFactionMember($tests)) {
 				$list[] = $tests;
 			}
 		}
 		return count($list) < 1 ? "None" : implode(", ", $list);
 	}
 
-	public function addMember(string $factionName, $player){
+	public function addMember(string $factionName, $player)
+	{
 		$faction = $this->factionData->prepare("INSERT or REPLACE INTO faction (player, factionname, rank) VALUES (:player, :factionname, :rank)");
 		$faction->bindValue(":player", $player);
 		$faction->bindValue(":factionname", $factionName);
 		$faction->bindValue(":rank", "Member");
 		$faction->execute();
 	}
+
 	public function addInvite($player, string $faction, $inviter)
 	{
 		$faction = $this->factionData->prepare("INSERT OR REPLACE INTO invite (player, faction, inviter, timestamp) VALUES (:player, :faction, :inviter, :timestamp )");
@@ -288,7 +291,9 @@ class FactionLoader{
 		}
 		return true;
 	}
-	public function declineInvite($player){
+
+	public function declineInvite($player)
+	{
 
 		$faction = $this->factionData->query("SELECT * FROM invite WHERE player = '$player'");
 		$factionArray = $faction->fetchArray(SQLITE3_ASSOC);
@@ -326,9 +331,9 @@ class FactionLoader{
 		return true;
 	}
 
-	public function hasFriendlyFireEnabled(Player $player): bool
+	public static function hasFriendlyFireEnabled(Player $player): bool
 	{
-		return isset($this->friendlyFire[$player->getName()]);
+		return isset(self::$friendlyFire[$player->getName()]);
 	}
 
 
@@ -343,7 +348,7 @@ class FactionLoader{
 					$pk->entityRuntimeId = $onlinePlayer->getId();
 					$player->dataPacket($pk);
 				}
-			}else{
+			} else {
 				$pk = new SetActorDataPacket();
 				$pk->metadata = [Entity::DATA_NAMETAG => [Entity::DATA_TYPE_STRING, "§c" . $onlinePlayer->getName()]];
 				$pk->entityRuntimeId = $onlinePlayer->getId();
@@ -353,10 +358,7 @@ class FactionLoader{
 	}
 
 	public function setFriendlyFire(Player $player){
-		if(isset($this->friendlyFire[$player->getName()])){
-			unset($this->friendlyFire[$player->getName()]);
-		}else{
-			array_push($this->friendlyFire, $player->getName());
-		}
+		$fac = $this->getFacByString($player->getName());
+		HCF::getInstance()->getScheduler()->scheduleRepeatingTask(new FriendlyFireTask($player, $fac), 20);
 	}
 }
