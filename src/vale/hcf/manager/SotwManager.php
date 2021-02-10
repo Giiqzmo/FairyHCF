@@ -20,7 +20,7 @@ class SotwManager implements Listener {
 	protected static $time = 0;
 
 	/**
-	 * SOTWManager Constructor.
+	 * SOTW Constructor.
 	 * @param HCF $plugin
 	 */
 	public function __construct(HCF $plugin){
