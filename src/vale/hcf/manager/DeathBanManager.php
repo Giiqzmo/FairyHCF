@@ -3,6 +3,7 @@
 namespace vale\hcf\manager;
 
 use pocketmine\Player;
+use vale\hcf\data\YamlProvider;
 use vale\hcf\HCF;
 
 class DeathBanManager
@@ -46,35 +47,6 @@ class DeathBanManager
         } else {
             return (int)0;
         }
-    }
-
-    public function getLives(Player $player)
-    {
-        $lives = HCF::getInstance()->getLivesData();
-        $lives->get($player->getName());
-        return (int)$lives;
-    }
-
-    public function setLives(Player $player, int $lives)
-    {
-
-    }
-
-    public function addLives(Player $player, int $lives)
-    {
-
-    }
-
-    public function hasLives(Player $player): bool
-    {
-        $data = HCF::$lives;
-        if ($data->exists($player->getName())) {
-            if ($data->get($player->getName() >= 1))
-                return true;
-        } else {
-            return false;
-        }
-        return 0;
     }
 
     public function sendLives(Player $sender, Player $recipient, int $value): void
