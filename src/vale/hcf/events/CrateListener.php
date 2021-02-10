@@ -17,7 +17,7 @@ class CrateListener implements Listener
         $this->plugin = $plugin;
         $this->plugin->getServer()->getPluginManager()->registerEvents($this, $plugin);
     }
-
+/*
     public function onPlace(BlockPlaceEvent $ev)
     {
         $player = $ev->getPlayer();
@@ -26,7 +26,6 @@ class CrateListener implements Listener
         $level = (string)$block->getLevel()->getName();
         $l = $block->getLevel();
         $names = explode("\n", $hand->getCustomName());
-        $data = YamlProvider::$crateData;
         $ev->setCancelled();
         $name = $block->getName();
         switch ($name) {
@@ -63,5 +62,5 @@ class CrateListener implements Listener
                 //todo add more
         }
     }
-
+*/
 }
