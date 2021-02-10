@@ -2,6 +2,7 @@
 
 namespace vale\hcf;
 
+use pocketmine\utils\Random;
 use SQLite3;
 use muqsit\invmenu\InvMenuHandler;
 use pocketmine\plugin\PluginBase;
@@ -17,13 +18,15 @@ use vale\hcf\events\{
 use vale\hcf\factions\{
 	FactionLoader, FactionListener
 };
-use vale\hcf\manager\{DataManager, DeathBanManager, CrateManager, EntityManager, RanksManager, ScoreBoardManager};
+use vale\hcf\manager\{DataManager, DeathBanManager, CrateManager, EntityManager, RanksManager, ScoreBoardManager, SotwManager};
 use vale\hcf\manager\tasks\{
 	DeathbanTask, BroadcastTask
 };
 use vale\hcf\data\YamlProvider;
 use vale\hcf\entities\PartnerPackageEntity;
-use vale\hcf\manager\SOTW;
+use vale\hcf\items\inventory\BrewingManager;
+use vale\hcf\items\ItemManager;
+use vale\hcf\items\TileManager;
 
 class HCF extends PluginBase
 {
@@ -35,8 +38,15 @@ class HCF extends PluginBase
 
 	public static FactionLoader $factionManager;
 
+     /** @var DataManager  $dataManager */
+	public static DataManager $dataManager;
+	public static $brewingStandsEnabled = true;
+
 	/** @var string[] $worlds */
 	public array $worlds = ["test", "uh", "ok"];
+
+	/** @var BrewingManager */
+	private $brewingManager = null;
 
 	public static function getInstance(): HCF
 	{
@@ -50,12 +60,18 @@ class HCF extends PluginBase
 		}
 		self::$instance = $this;
 		YamlProvider:: __initiateRegistration();
+		self::$dataManager = new DataManager($this);
 		EntityManager::registerEntites();
+		ItemManager::initItems();
+		TileManager::init();
+		$this->brewingManager = new BrewingManager();
+		$this->brewingManager->init();
 		$this->initFactions();
 		$this->loadWorlds();
 		$this->loadCommands();
 		$this->initListeners();
 		$this->getScheduler()->scheduleRepeatingTask(new DeathbanTask($this), 20);
+		$this->getScheduler()->scheduleRepeatingTask(new BroadcastTask($this),20);
 	}
 
 	function initFactions()
@@ -92,26 +108,6 @@ class HCF extends PluginBase
 		new CrateListener($this);
 	}
 
-	public function getWarnData(): Config
-	{
-		return YamlProvider::$warns;
-	}
-
-	public function getKillsData(): Config
-	{
-		return YamlProvider::$kills;
-	}
-
-	public function getDeathsData(): Config
-	{
-		return YamlProvider::$deaths;
-	}
-
-	public function getLivesData(): Config
-	{
-		return YamlProvider::$lives;
-	}
-
 	public function getDeathBannedData(): Config
 	{
 		return YamlProvider::$deathBannedPlayers;
@@ -122,25 +118,26 @@ class HCF extends PluginBase
 		return YamlProvider::$deathBanManager;
 	}
 
-	public function getDataManager(): DataManager
-	{
-		return YamlProvider::$dataManager;
+
+	public function getDataManager(): DataManager{
+		return self::$dataManager;
 	}
+
 
 	public function getFactionManager(): FactionLoader
 	{
 		return self::$factionManager;
 	}
 
-	public function getFactionData(): SQLite3
-	{
-		return self::$factionData;
-	}
-	
 
 	public static function getTimeToFullString(Int $time) : String {
 		return gmdate("H:i:s", $time);
 	}
+
+	public function getBrewingManager(): BrewingManager{
+		return $this->brewingManager;
+	}
+
 
 	public function onDisable()
 	{
