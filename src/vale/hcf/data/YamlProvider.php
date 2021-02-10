@@ -19,26 +19,13 @@ class YamlProvider
 	/** @var Config $config * */
 	public static $config;
 	/** @var array $folders * */
-	public static array $folders = ["kits", "lives", "deaths", "crates", "warns", "kills"];
+	public static array $folders = ["kits", "lives", "crates"];
 	/** @var DataManager $dataManager */
 	public static DataManager $dataManager;
-
 	public static Config $blacklistedPlayers;
-
 	/** @var Config $deathBannedPlayers */
 	public static Config $deathBannedPlayers;
-	/** @var Config $warns */
-	public static Config $warns;
-
 	public static Config $crateData;
-	/** @var Config $lives */
-	public static Config $lives;
-
-	/** @var Config $deaths */
-	public static Config $deaths;
-
-	/** @var Config $kills */
-	public static Config $kills;
 	public static DeathBanManager $deathBanManager;
 
 
@@ -48,16 +35,11 @@ class YamlProvider
 		foreach (self::$folders as $folder) {
 			@mkdir(HCF::getInstance()->getDataFolder() . $folder);
 		}
-		self::$lives = new Config(HCF::getInstance()->getDataFolder() . "lives/" . "lives.yml");
-		self::$deaths = new Config(HCF::getInstance()->getDataFolder() . "deaths/" . "deaths.yml");
-		self::$kills = new Config(HCF::getInstance()->getDataFolder() . "kills/" . "kills.yml");
-		self::$warns = new Config(HCF::getInstance()->getDataFolder() . "warns/" . "warns.yml");
 		self::$deathBannedPlayers = new Config(HCF::getInstance()->getDataFolder() . "deathbannedplayers.yml");
 		self::$blacklistedPlayers = new Config(HCF::getInstance()->getDataFolder() . "blacklistedplayers.yml");
 		self::$dataManager = new DataManager(HCF::getInstance());
 		self::$deathBanManager = new DeathBanManager();
 		self::$config = new Config(HCF::getInstance()->getDataFolder() . "serverprefrences.yml", Config::YAML);
-
 		self::$config->save();
 		HCF::getInstance()->saveResource("serverprefrences.yml");
 	}
