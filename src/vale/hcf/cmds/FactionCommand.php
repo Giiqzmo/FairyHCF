@@ -48,11 +48,15 @@ class FactionCommand extends PluginCommand
 					case "delete":
 					case "DELETE":
 					case "Delete":
-						if (HCF::getInstance()->getFactionManager()->isInFaction($sender) && HCF::getInstance()->getFactionManager()->isFactionLeader($sender)) {
-							HCF::getInstance()->getFactionManager()->deleteFaction(HCF::$factionManager->getPlayerFaction($sender));
+						$mgr = new FactionLoader(HCF::getInstance());
+						if ($mgr->isInFaction($sender->getName()) && $mgr->isFactionLeader($sender->getName())) {
+							$fac = $mgr->getPlayerFaction($sender->getName());
+							$mgr->deleteFaction($fac, $sender->getName());
+							Server::getInstance()->broadcastMessage("Faction was deleted");
+							$sender->sendMessage("Deleted");
+						}else {
+							$sender->sendMessage("not leader");
 						}
-						Server::getInstance()->broadcastMessage("");
-						$sender->sendMessage("");
 						break;
 
 					case "Who":
@@ -140,25 +144,28 @@ class FactionCommand extends PluginCommand
 					case "friendlyfire":
 					case "ff":
 					case "FriendlyFire":
-						/*
-						$mgr = HCF::getInstance()->getFactionManager();
-						foreach ($mgr->getMembers() as $member){
-							if($member instanceof Player){
-								if(!$mgr->hasFriendlyFireEnabled($member))
-								$mgr->setFriendlyFire($member,"on");
-							}else{
-								$mgr->setFriendlyFire($member, "off");
+						$mgr = new FactionLoader(HCF::getInstance());
+						foreach ($mgr->getAllMembers($sender->getName()) as $member) {
+							if ($member instanceof Player) {
+								if (!$mgr->hasFriendlyFireEnabled($member))
+									$mgr->setFriendlyFire($member);
+								$sender->sendMessage("FF ENABLED");
+							} else {
+								$sender->sendMessage("DISABLED");
+								if ($mgr->hasFriendlyFireEnabled($member)) {
+									unset($mgr->friendlyFire, $member);
+								}
 							}
-						}*/
+						}
 						#cant do this coz new hasnt made a fricking get members func
 						break;
 
 					case "test":
-						$mgr = HCF::getInstance()->getFactionManager();
+						$mgr = new FactionLoader(HCF::getInstance());
 						$fac = $mgr->getPlayerFaction($sender->getName());
-                        $sender->sendMessage("Leaders: " . $mgr->getAllLeaders($fac));
-                        $sender->sendMessage("Co-Leaders: " . $mgr->getAllCaptains($fac));
-                        $sender->sendMessage("Captains: " . $mgr->getAllCaptains($fac));
+                        $sender->sendMessage("Leaders: " . $mgr->getFactionLeaders($fac));
+                        $sender->sendMessage("Co-Leaders: " . $mgr->getFactionCaptains($fac));
+                        $sender->sendMessage("Captains: " . $mgr->getFactionCaptains($fac));
                         $sender->sendMessage("Members: " . $mgr->getAllMembers($fac));
 						break;
                     case "invite2":
