@@ -2,12 +2,16 @@
 
 namespace vale\hcf\events;
 
+use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerDeathEvent;
 use pocketmine\event\player\PlayerLoginEvent;
+use pocketmine\Player;
 use pocketmine\Server;
+use vale\hcf\data\YamlProvider;
 use vale\hcf\HCF;
 use vale\hcf\manager\DataManager;
+use vale\hcf\manager\tasks\ScoreboardTask;
 
 class PlayerListener implements Listener
 {
@@ -21,19 +25,28 @@ class PlayerListener implements Listener
         $this->plugin->getServer()->getPluginManager()->registerEvents($this, $this->plugin);
     }
 
-    public function onPlayerDeath(PlayerDeathEvent $event)
-    {
-        $deathBan = HCF::getInstance();
-        $player = $event->getPlayer();
-        $deathBan->getDeathBanManager()->setDeathBan($player, 6000);
-        $player->kick("You have been deathbanned for 60 minutes", false);
-    }
+
+    public function onDeath(PlayerDeathEvent $event){
+    	$player = $event->getPlayer();
+    	$data = HCF::getInstance()->getDataManager();
+    	$deathbanMngr = HCF::getInstance()->getDeathBanManager();
+    	if($event instanceof EntityDamageByEntityEvent){
+    		$damager = $event->getDamager();
+    		$entity = $event->getEntity();
+    		if(($entity instanceof Player && $damager instanceof Player)){
+    			$data->addKills($damager->getName(), 1);
+    			$data->addDeaths($entity,1);
+    			$deathbanMngr->setDeathBan($entity,5*10);
+    			//TODO
+			}
+		}
+	}
 
     public function onAliasCheck(PlayerLoginEvent $event)
     {
         $player = $event->getPlayer();
         $player = $event->getPlayer();
-        $clientid = HCF::$blacklistedPlayers->getAll();
+        $clientid = YamlProvider::$blacklistedPlayers->getAll();
         foreach ($clientid as $p => $id) {
             if ($player->getClientId() === $id) {
                 $player->setBanned(true);
@@ -54,6 +67,7 @@ class PlayerListener implements Listener
             $time = HCF::getInstance()->secondsToTime($deathBanTime);
             $player->kick("You are deathbanned for {$time}", false);
         }
+        HCF::getInstance()->getScheduler()->scheduleRepeatingTask(new ScoreboardTask($player),20);
     }
     
 //     public function onPlayerMove(PlayerMoveEvent $event){
