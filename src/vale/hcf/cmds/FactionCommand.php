@@ -8,6 +8,7 @@ use pocketmine\Player;
 use pocketmine\Server;
 use vale\hcf\factions\FactionLoader;
 use vale\hcf\HCF;
+use vale\hcf\manager\KitsManager;
 
 class FactionCommand extends PluginCommand
 {
@@ -173,6 +174,11 @@ class FactionCommand extends PluginCommand
                         $fac = $mgr->getPlayerFaction($sender->getName());
                         $mgr->addMember($fac, $args[1]);
                         break;
+
+					case "kits":
+						$mngr = new KitsManager(HCF::getInstance());
+						$mngr->sendKitsMainMenu($sender);
+						break;
 				}
 			}
 		}
