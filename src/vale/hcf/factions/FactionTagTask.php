@@ -1,7 +1,7 @@
 <?php
 
 
-namespace vale\hcf\events;
+namespace vale\hcf\factions;
 
 
 use pocketmine\Player;
