@@ -129,4 +129,5 @@ class DataManager
 		$db->bindValue(":warns", $this->getWarns($playername) + $value);
 		$db->execute();
 	}
+
 }
