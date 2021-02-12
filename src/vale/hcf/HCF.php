@@ -70,7 +70,6 @@ class HCF extends PluginBase
 		$this->initListeners();
 		$this->getScheduler()->scheduleRepeatingTask(new DeathbanTask($this), 20);
 		$this->getScheduler()->scheduleRepeatingTask(new BroadcastTask($this),20);
-        $this->getScheduler()->scheduleRepeatingTask(new FactionTag(), 5);
 	}
 
 	function initFactions()
