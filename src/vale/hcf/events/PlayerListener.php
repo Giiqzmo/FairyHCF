@@ -3,8 +3,11 @@
 namespace vale\hcf\events;
 
 use pocketmine\event\entity\EntityDamageByEntityEvent;
+use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\Listener;
+use pocketmine\event\player\PlayerChatEvent;
 use pocketmine\event\player\PlayerDeathEvent;
+use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerLoginEvent;
 use pocketmine\event\player\PlayerMoveEvent;
 use pocketmine\event\player\PlayerPreLoginEvent;
@@ -45,6 +48,20 @@ class PlayerListener implements Listener
     			//TODO
 			}
 		}
+        $player = $event->getPlayer();
+        $cause = $player->getLastDamageCause();
+        $data = HCF::getInstance()->getDataManager();
+        $playerKills = $data->getKills($player->getName());
+        $message = "§c{$player->getName()}§4[{$playerKills}] §edied.";
+        if($cause instanceof EntityDamageByEntityEvent){
+            $killer = $cause->getDamager();
+            if($killer instanceof Player){
+                $item = $killer->getInventory()->getItemInHand();
+            }
+            $killerKills = $data->getKills($killer->getName());
+         $message = "§c{$player->getName()}§4[{$playerKills}] §ewas killed by §c{$killer->getName()}§4[{$killerKills}] §eusing §r{$item->getCustomName()}";
+        }
+        $event->setDeathMessage($message);
 	}
 
     public function onAliasCheck(PlayerLoginEvent $event)
@@ -67,6 +84,7 @@ class PlayerListener implements Listener
     {
         $player = $event->getPlayer();
         $deathBan = HCF::getInstance();
+
         if ($deathBan->getDeathBanManager()->isDeathBanned($player) === true) {
             $deathBanTime = $deathBan->getDeathBanManager()->getDeathBan($player);
             $time = HCF::getInstance()->secondsToTime($deathBanTime);
@@ -88,6 +106,18 @@ class PlayerListener implements Listener
 
     public function onPlayerPreLogin(PlayerPreLoginEvent $event){
         $player = $event->getPlayer();
-        $this->plugin->getScheduler()->scheduleRepeatingTask(new FactionTag($player), 5);
+        //$this->plugin->getScheduler()->scheduleRepeatingTask(new FactionTag($player), 5);
+    }
+
+    public function chatFormat(PlayerChatEvent $event){
+        $player = $event->getPlayer();
+        $faction = $this->plugin->getFactionManager()->getPlayerFaction($player->getName());
+        $message = $event->getMessage();
+        $isInFaction = $this->plugin->getFactionManager()->isInFaction($player->getName());
+        if($isInFaction){
+            $event->setFormat("§6[§e{$faction}§6] §f{$player->getName()}§7: §f{$message}");
+        }else{
+            $event->setFormat("§f{$player->getName()}§7: §f{$message}");
+        }
     }
 }

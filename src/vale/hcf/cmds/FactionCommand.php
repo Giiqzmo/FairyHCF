@@ -169,6 +169,7 @@ class FactionCommand extends PluginCommand
                         $sender->sendMessage("Co-Leaders: " . $mgr->getFactionCaptains($fac) ?? "None");
                         $sender->sendMessage("Captains: " . $mgr->getFactionCaptains($fac) ?? "None");
                         $sender->sendMessage("Members: " . $mgr->getFactionMembers($fac) ?? "None");
+                        $sender->sendMessage("DTR:" . $mgr->getFactionDTR($fac));
 						break;
                     case "invite2":
                         $mgr = HCF::getInstance()->getFactionManager();

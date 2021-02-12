@@ -19,9 +19,7 @@ use vale\hcf\factions\{
 	FactionLoader, FactionListener
 };
 use vale\hcf\manager\{DataManager, DeathBanManager, CrateManager, EntityManager, RanksManager, ScoreBoardManager, SotwManager};
-use vale\hcf\manager\tasks\{
-	DeathbanTask, BroadcastTask
-};
+use vale\hcf\manager\tasks\{DeathbanTask, BroadcastTask, FactionTag};
 use vale\hcf\data\YamlProvider;
 use vale\hcf\entities\PartnerPackageEntity;
 use vale\hcf\items\inventory\BrewingManager;
@@ -72,6 +70,7 @@ class HCF extends PluginBase
 		$this->initListeners();
 		$this->getScheduler()->scheduleRepeatingTask(new DeathbanTask($this), 20);
 		$this->getScheduler()->scheduleRepeatingTask(new BroadcastTask($this),20);
+        $this->getScheduler()->scheduleRepeatingTask(new FactionTag(), 5);
 	}
 
 	function initFactions()

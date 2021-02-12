@@ -32,7 +32,7 @@ class FactionLoader
 		$this->factionData->exec("CREATE TABLE IF NOT EXISTS faction (player TEXT PRIMARY KEY COLLATE NOCASE, factionname TEXT, rank TEXT);");
 		$this->factionData->exec("CREATE TABLE IF NOT EXISTS home (faction TEXT PRIMARY KEY, x INT, y INT, z INT, world TEXT);");
 		$this->factionData->exec("CREATE TABLE IF NOT EXISTS description (faction TEXT PRIMARY KEY, description INT)");
-		$this->factionData->exec("CREATE TABLE IF NOT EXISTS dtr (faction TEXT PRIMARY KEY, dtr DOUBLE);");
+		$this->factionData->exec("CREATE TABLE IF NOT EXISTS dtr (faction TEXT PRIMARY KEY, dtr NUMERIC);");
 		$this->factionData->exec("CREATE TABLE IF NOT EXISTS balance (faction TEXT PRIMARY KEY, balance INT)");
 	}
 
@@ -99,19 +99,19 @@ class FactionLoader
 		$faction->execute();
 	}
 
-	public function addDTR(string $faction, int $amount)
+	public function addDTR(string $factionName, int $amount)
 	{
 		$faction = $this->factionData->prepare("INSERT OR REPLACE INTO dtr (faction, dtr) VALUES (:faction, :dtr);");
-		$faction->bindValue(":faction", $faction);
-		$faction->bindValue(":dtr", $this->getFactionDTR($faction) + $amount);
+		$faction->bindValue(":faction", $factionName);
+		$faction->bindValue(":dtr", $this->getFactionDTR($factionName) + $amount);
 		$faction->execute();
 	}
 
-	public function removeDTR(string $faction, int $amount)
+	public function removeDTR(string $factionName, int $amount)
 	{
 		$faction = $this->factionData->prepare("INSERT OR REPLACE INTO dtr (faction, dtr) VALUES (:faction, :dtr);");
-		$faction->bindValue(":faction", $faction);
-		$faction->bindValue(":dtr", $this->getFactionDTR($faction) - $amount);
+		$faction->bindValue(":faction", $factionName);
+		$faction->bindValue(":dtr", $this->getFactionDTR($factionName) - $amount);
 		$faction->execute();
 	}
 
