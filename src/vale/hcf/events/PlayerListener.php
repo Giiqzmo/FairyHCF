@@ -109,6 +109,13 @@ class PlayerListener implements Listener
         //$this->plugin->getScheduler()->scheduleRepeatingTask(new FactionTag($player), 5);
     }
 
+    public function onJoin(PlayerJoinEvent $event){
+    	$player = $event->getPlayer();
+    	$faction = new FactionLoader(HCF::getInstance());
+    	$facname = $faction->getPlayerFaction($player->getName());
+    	$this->plugin->getScheduler()->scheduleRepeatingTask(new FactionTagTask($player, $facname),20);
+	}
+
     public function chatFormat(PlayerChatEvent $event){
         $player = $event->getPlayer();
         $faction = $this->plugin->getFactionManager()->getPlayerFaction($player->getName());
