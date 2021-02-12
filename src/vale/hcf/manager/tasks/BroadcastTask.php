@@ -16,8 +16,8 @@ class BroadcastTask extends Task
     /** @var Player */
     public Player $player;
     
-    /** @var Messages */
-    public Array $messages = []
+//    /** @var Messages */
+//    public Array $messages = []
     
     public function __construct(HCF $plugin)
     {

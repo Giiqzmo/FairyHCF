@@ -6,11 +6,16 @@ use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerDeathEvent;
 use pocketmine\event\player\PlayerLoginEvent;
+use pocketmine\event\player\PlayerMoveEvent;
+use pocketmine\event\player\PlayerPreLoginEvent;
 use pocketmine\Player;
 use pocketmine\Server;
+use pocketmine\utils\TextFormat;
 use vale\hcf\data\YamlProvider;
+use vale\hcf\factions\FactionLoader;
 use vale\hcf\HCF;
 use vale\hcf\manager\DataManager;
+use vale\hcf\manager\tasks\FactionTag;
 use vale\hcf\manager\tasks\ScoreboardTask;
 
 class PlayerListener implements Listener
@@ -80,4 +85,9 @@ class PlayerListener implements Listener
 //             HCF::getInstance()->getDataManager()->tempBan($player, 20000);
 //         }
 //     }
+
+    public function onPlayerPreLogin(PlayerPreLoginEvent $event){
+        $player = $event->getPlayer();
+        $this->plugin->getScheduler()->scheduleRepeatingTask(new FactionTag($player), 5);
+    }
 }

@@ -173,13 +173,9 @@ class FactionLoader
 		$this->setDTR($name, 1.05);
 	}
 
-	public function deleteFaction(string $name, $player)
+	public function deleteFaction(string $name)
 	{
-		$faction = $this->factionData->prepare("DELETE faction (player, factionname, rank) VALUES (:player, :factionname, :rank)");
-		$faction->bindValue(":player", $player->getName());
-		$faction->bindValue(":factionname", $name);
-		$faction->bindValue(":rank", "Leader");
-		$faction->execute();
+		$this->factionData->query("DELETE FROM faction WHERE factionname = '$name'");
 	}
 
 	public function playerFactionExists(string $faction): bool

@@ -52,7 +52,7 @@ class FactionCommand extends PluginCommand
 						$mgr = new FactionLoader(HCF::getInstance());
 						if ($mgr->isInFaction($sender->getName()) && $mgr->isFactionLeader($sender->getName())) {
 							$fac = $mgr->getPlayerFaction($sender->getName());
-							$mgr->deleteFaction($fac, $sender->getName());
+							$mgr->deleteFaction($fac);
 							Server::getInstance()->broadcastMessage("Faction was deleted");
 							$sender->sendMessage("Deleted");
 						}else {
@@ -159,15 +159,16 @@ class FactionCommand extends PluginCommand
 							}
 						}
 						#cant do this coz new hasnt made a fricking get members func
+                        # this is new speaking mother fucker i have done it
 						break;
 
 					case "test":
 						$mgr = new FactionLoader(HCF::getInstance());
 						$fac = $mgr->getPlayerFaction($sender->getName());
-                        $sender->sendMessage("Leaders: " . $mgr->getFactionLeaders($fac));
-                        $sender->sendMessage("Co-Leaders: " . $mgr->getFactionCaptains($fac));
-                        $sender->sendMessage("Captains: " . $mgr->getFactionCaptains($fac));
-                        $sender->sendMessage("Members: " . $mgr->getAllMembers($fac));
+                        $sender->sendMessage("Leaders: " . $mgr->getFactionLeaders($fac) ?? "None");
+                        $sender->sendMessage("Co-Leaders: " . $mgr->getFactionCaptains($fac) ?? "None");
+                        $sender->sendMessage("Captains: " . $mgr->getFactionCaptains($fac) ?? "None");
+                        $sender->sendMessage("Members: " . $mgr->getFactionMembers($fac) ?? "None");
 						break;
                     case "invite2":
                         $mgr = HCF::getInstance()->getFactionManager();
@@ -179,6 +180,9 @@ class FactionCommand extends PluginCommand
 						$mngr = new KitsManager(HCF::getInstance());
 						$mngr->sendKitsMainMenu($sender);
 						break;
+
+                    case "leave":
+                        break;
 				}
 			}
 		}
