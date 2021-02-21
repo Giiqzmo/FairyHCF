@@ -7,6 +7,7 @@ use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\Player;
 use pocketmine\Server;
+use vale\hcf\events\PlayerFactionTagEvent;
 use vale\hcf\HCF;
 
 class FactionListener implements Listener
@@ -19,6 +20,7 @@ class FactionListener implements Listener
         $this->plugin = $plugin;
         $plugin->getServer()->getPluginManager()->registerEvents($this, $plugin);
     }
+
 
     /**
      * @param EntityDamageByEntityEvent $event
