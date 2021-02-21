@@ -18,7 +18,7 @@ use vale\hcf\data\YamlProvider;
 use vale\hcf\factions\FactionLoader;
 use vale\hcf\HCF;
 use vale\hcf\manager\DataManager;
-use vale\hcf\manager\tasks\FactionTag;
+use vale\hcf\manager\tasks\FactionTagTask;
 use vale\hcf\manager\tasks\ScoreboardTask;
 
 class PlayerListener implements Listener
@@ -113,7 +113,8 @@ class PlayerListener implements Listener
     	$player = $event->getPlayer();
     	$faction = new FactionLoader(HCF::getInstance());
     	$facname = $faction->getPlayerFaction($player->getName());
-    	$this->plugin->getScheduler()->scheduleRepeatingTask(new FactionTagTask($player, $facname),20);
+		$this->plugin->getScheduler()->scheduleRepeatingTask(new FactionTagTask($player),20);
+
 	}
 
     public function chatFormat(PlayerChatEvent $event){
