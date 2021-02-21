@@ -4,10 +4,12 @@ namespace vale\hcf\manager\tasks;
 
 use pocketmine\Player;
 use pocketmine\scheduler\Task;
+use pocketmine\Server;
 use pocketmine\utils\TextFormat as C;
+use vale\hcf\events\PlayerFactionTagEvent;
 use vale\hcf\HCF;
 
-class BroadcastTask extends Task
+class FactionTagTask extends Task
 {
 
     /** @var HCF */
@@ -19,13 +21,16 @@ class BroadcastTask extends Task
 //    /** @var Messages */
 //    public Array $messages = []
     
-    public function __construct(HCF $plugin)
+    public function __construct(Player $player)
     {
-        $this->plugin = $plugin;
+        $this->player = $player;
     }
 
     public function onRun(int $currentTick)
     {
-        //shit goes here
+
+      $ev = new PlayerFactionTagEvent($this->player);
+      $ev->updateFactions();
+      $ev->call();
     }
 }
