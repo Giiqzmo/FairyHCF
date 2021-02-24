@@ -49,7 +49,7 @@ class PlayerFactionTagEvent extends PlayerEvent implements Cancellable
 		$factionmanager = new FactionLoader(HCF::getInstance());
 		$faction = $factionmanager->getPlayerFaction($player->getName());
 		foreach ($factionmanager->getAllMembers($faction) as $member) {
-			$mem = Server::getInstance()->getPlayer($member);
+			 $mem = Server::getInstance()->getPlayerExact($member);
 			if ($mem != null) {
 				$name = $mem->getName();
 				$faction = TextFormat::YELLOW . $factionmanager->getPlayerFaction($mem->getName());
