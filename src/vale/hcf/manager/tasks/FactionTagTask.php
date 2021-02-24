@@ -28,9 +28,9 @@ class FactionTagTask extends Task
 
     public function onRun(int $currentTick)
     {
-
-      $ev = new PlayerFactionTagEvent($this->player);
-      $ev->updateFactions();
+   $player = $this->player;
+      $ev = new PlayerFactionTagEvent($player);
+      $ev->updateFactions($player);
       $ev->call();
     }
 }
