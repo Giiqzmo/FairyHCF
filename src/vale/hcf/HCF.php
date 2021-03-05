@@ -18,12 +18,16 @@ use vale\hcf\events\{
 use vale\hcf\factions\{
 	FactionLoader, FactionListener
 };
-use vale\hcf\manager\{DataManager, DeathBanManager, CrateManager, EntityManager, RanksManager, ScoreBoardManager, SotwManager};
+use vale\hcf\manager\{DataManager, CrateManager, EntityManager,  ScoreBoardManager, SotwManager};
 use vale\hcf\manager\tasks\{DeathbanTask, FactionTagTask};
 use vale\hcf\data\YamlProvider;
+use vale\hcf\deathban\{DeathBanListener, DeathBanArena, DeathBanManager
+};
+
 use vale\hcf\entities\PartnerPackageEntity;
 use vale\hcf\items\inventory\BrewingManager;
 use vale\hcf\items\ItemManager;
+use vale\hcf\items\ItemsListener;
 use vale\hcf\items\TileManager;
 
 class HCF extends PluginBase
@@ -41,7 +45,7 @@ class HCF extends PluginBase
 	public static $brewingStandsEnabled = true;
 
 	/** @var string[] $worlds */
-	public array $worlds = ["test", "uh", "ok"];
+	public array $worlds = ["test", "uh", "ok", "deathbanarena"];
 
 	/** @var BrewingManager */
 	private $brewingManager = null;
@@ -60,10 +64,10 @@ class HCF extends PluginBase
 		YamlProvider:: __initiateRegistration();
 		self::$dataManager = new DataManager($this);
 		EntityManager::registerEntites();
-		ItemManager::initItems();
-		TileManager::init();
-		$this->brewingManager = new BrewingManager();
-		$this->brewingManager->init();
+		//ItemManager::initItems();
+		//TileManager::init();
+		//$this->brewingManager = new BrewingManager();
+		//$this->brewingManager->init();
 		$this->initFactions();
 		$this->loadWorlds();
 		$this->loadCommands();
@@ -103,16 +107,13 @@ class HCF extends PluginBase
 	{
 		new PlayerListener($this);
 		new CrateListener($this);
+		new DeathBanListener($this);
+		new ItemsListener($this);
 	}
 
 	public function getDeathBannedData(): Config
 	{
 		return YamlProvider::$deathBannedPlayers;
-	}
-
-	public function getDeathBanManager(): DeathBanManager
-	{
-		return YamlProvider::$deathBanManager;
 	}
 
 
