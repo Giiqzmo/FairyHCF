@@ -9,7 +9,7 @@ use pocketmine\entity\Skin;
 use pocketmine\level\Level;
 use pocketmine\level\Position;
 use pocketmine\utils\TextFormat;
-use vale\hcf\manager\misc\SkinConverter;
+use vale\hcf\misc\SkinConverter;
 use vale\hcf\HCF;
 
 class IEManager {
