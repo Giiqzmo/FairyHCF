@@ -26,7 +26,6 @@ class YamlProvider
 	/** @var Config $deathBannedPlayers */
 	public static Config $deathBannedPlayers;
 	public static Config $crateData;
-	public static DeathBanManager $deathBanManager;
 
 
 	public static function __initiateRegistration(): void
@@ -38,9 +37,6 @@ class YamlProvider
 		self::$deathBannedPlayers = new Config(HCF::getInstance()->getDataFolder() . "deathbannedplayers.yml");
 		self::$blacklistedPlayers = new Config(HCF::getInstance()->getDataFolder() . "blacklistedplayers.yml");
 		self::$dataManager = new DataManager(HCF::getInstance());
-		self::$deathBanManager = new DeathBanManager();
 		self::$config = new Config(HCF::getInstance()->getDataFolder() . "serverprefrences.yml", Config::YAML);
-		self::$config->save();
-		HCF::getInstance()->saveResource("serverprefrences.yml");
 	}
 }
