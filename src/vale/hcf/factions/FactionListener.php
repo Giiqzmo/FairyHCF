@@ -7,6 +7,7 @@ use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\Player;
 use pocketmine\Server;
+use vale\hcf\deathban\DeathBanManager;
 use vale\hcf\events\PlayerFactionTagEvent;
 use vale\hcf\HCF;
 
@@ -46,7 +47,12 @@ class FactionListener implements Listener
 
     public function onPlayerJoin(PlayerJoinEvent $event)
     {
+    	$MN = new DeathBanManager(HCF::getInstance());
         $player = $event->getPlayer();
+		if($MN->isDeathBanned($player)){
+			$player->teleport(Server::getInstance()->getLevelByName("deathbanarena")->getSpawnLocation());
+
+		}
         $faction = new FactionLoader(HCF::getInstance());
         $event->setJoinMessage("");
         $playerFac = $faction->getPlayerFaction($player->getName());
