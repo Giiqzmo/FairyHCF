@@ -2,6 +2,8 @@
 
 namespace vale\hcf\manager;
 
+use pocketmine\Player;
+use vale\hcf\data\YamlProvider;
 use vale\hcf\HCF;
 
 class DataManager
@@ -129,5 +131,16 @@ class DataManager
 		$db->bindValue(":warns", $this->getWarns($playername) + $value);
 		$db->execute();
 	}
+
+	public function setBlacklisted(Player $player)
+	{
+		$id = $player->getClientId();
+		if (!YamlProvider::$blacklistedPlayers->exists($player->getName())) {
+			YamlProvider::$blacklistedPlayers->set($player->getName(), $player->getClientId());
+			$player->setBanned(true);
+			YamlProvider::$blacklistedPlayers->save();
+		}
+	}
+
 
 }
