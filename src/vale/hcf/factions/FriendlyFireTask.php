@@ -25,7 +25,7 @@ class FriendlyFireTask extends Task
 		$fac = $mngr->getPlayerFaction($this->player->getName());
 		$leader = $mngr->getFactionLeaders($fac);
 		foreach ($mngr->getAllMembers($fac) as $member){
-			array_push(FactionLoader::$friendlyFire, $member->getName());
+			array_push(FactionLoader::$friendlyFire, $member);
 		}
 	}
 }
