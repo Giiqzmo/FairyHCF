@@ -7,7 +7,6 @@ use pocketmine\level\Level;
 use pocketmine\Server;
 use vale\hcf\data\YamlProvider;
 
-
 class DeathBanArena
 {
 
