@@ -6,6 +6,7 @@ use pocketmine\event\Listener;
 use pocketmine\math\Vector3;
 use pocketmine\network\mcpe\protocol\SetActorDataPacket;
 use pocketmine\Player;
+use pocketmine\utils\TextFormat;
 use SQLite3;
 use vale\hcf\HCF;
 
@@ -36,13 +37,21 @@ class FactionLoader
 		$this->factionData->exec("CREATE TABLE IF NOT EXISTS balance (faction TEXT PRIMARY KEY, balance INT)");
 	}
 
-    public function isInFaction(string $name) : bool
-    {
+	public function getFaction(string $name): string
+	{
+		$result = $this->factionData->query("SELECT * FROM faction WHERE player = '$name';");
+		$array = $result->fetchArray(SQLITE3_ASSOC);
+		return $array["factionname"];
+	}
 
-        $result = $this->factionData->query("SELECT * FROM faction WHERE player = '$name';");
-        $array = $result->fetchArray(SQLITE3_ASSOC);
-        return empty($array) == false;
-    }
+	public function isInFaction(string $name): bool
+	{
+
+		$result = $this->factionData->query("SELECT * FROM faction WHERE player = '$name';");
+		$array = $result->fetchArray(SQLITE3_ASSOC);
+		return empty($array) == false;
+	}
+
 	public function getPlayerFaction($player)
 	{
 		$faction = $this->factionData->query("SELECT factionname FROM faction WHERE player = '$player'");
@@ -353,8 +362,17 @@ class FactionLoader
 		}
 	}
 
-	public function setFriendlyFire(Player $player){
+	public function setFriendlyFire(Player $player)
+	{
 		$fac = $this->getFacByString($player->getName());
 		HCF::getInstance()->getScheduler()->scheduleRepeatingTask(new FriendlyFireTask($player, $fac), 20);
+	}
+
+	public function focus(Player $recipent, Player $target)
+	{
+		$name = $target->getName();
+		$recipent->sendData($target, [Entity::DATA_NAMETAG => [Entity::DATA_TYPE_STRING, TextFormat::LIGHT_PURPLE . "{$name}" . "\n" . ""]]);
+		$this->plugin->getScheduler()->scheduleRepeatingTask(new FactionFocusTask($recipent, $target),20);
+
 	}
 }
