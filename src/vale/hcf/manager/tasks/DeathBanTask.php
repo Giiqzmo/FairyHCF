@@ -32,7 +32,11 @@ class DeathbanTask extends Task
 				} else {
 					YamlProvider::$deathBannedPlayers->set($p, $time - 1);
 					YamlProvider::$deathBannedPlayers->save();
-					//todo lives
+				        $player = HCF::getInstance()->getServer()->getPlayer($p);
+				         if(!$deathbanned->exists($player->getName)){
+					 
+						 #teleport
+					 }
 				}
 			}
 		}
