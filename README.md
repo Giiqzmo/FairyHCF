@@ -1,2 +1,2 @@
 # FairyHCF
-FairyHCF Core
+FairyHCF Core unfinished core i gave up on
